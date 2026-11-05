@@ -1,0 +1,156 @@
+.page {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(32px, 6vw, 96px);
+  padding-top: clamp(28px, 5vw, 72px);
+  align-items: start;
+}
+
+.main :global(.title) {
+  margin: 18px 0 26px;
+}
+
+.main :global(.kicker b) {
+  color: var(--ok);
+}
+
+.mailBox {
+  margin-top: clamp(32px, 4vw, 52px);
+  padding-top: 28px;
+  border-top: 1px solid var(--line);
+}
+
+.mail {
+  display: inline-block;
+  font-family: var(--f-display), sans-serif;
+  font-weight: 600;
+  font-size: clamp(1.4rem, 0.8rem + 2.6vw, 2.8rem);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+  border-bottom: 2px solid var(--ac);
+  padding-bottom: 4px;
+  transition: color 0.2s;
+}
+
+.mail:hover {
+  color: var(--ac);
+}
+
+.mailActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: clamp(0px, 4vw, 48px);
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 26px;
+}
+
+.h {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ac);
+  margin-bottom: 14px;
+}
+
+.list {
+  list-style: none;
+}
+
+.list li {
+  position: relative;
+  padding: 11px 0 11px 26px;
+  border-top: 1px solid var(--line);
+  color: var(--soft);
+  font-size: 0.97rem;
+  line-height: 1.5;
+}
+
+.list li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--ac);
+}
+
+.facts {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 8px 26px;
+}
+
+.facts > div {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 16px;
+  padding: 14px 0;
+}
+
+.facts > div + div {
+  border-top: 1px solid var(--line);
+}
+
+.facts dt {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim-text);
+  padding-top: 3px;
+}
+
+.facts dd {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--soft);
+  line-height: 1.5;
+}
+
+.facts dd a {
+  border-bottom: 1px solid var(--line2);
+}
+
+.facts dd a:hover {
+  color: var(--ac);
+  border-color: var(--ac);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-weight: 600;
+}
+
+@media (max-width: 860px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .side {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .facts > div {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+}
