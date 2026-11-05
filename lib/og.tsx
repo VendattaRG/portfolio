@@ -7,36 +7,32 @@ export const OG_SIZE = { width: 1200, height: 630 }
 
 const C = { bg: '#0d0e12', ink: '#f2f1ea', mut: '#9a9ba3', line: '#2e2f38', ac: '#ff5c47' }
 
-// Fetch a Google font as TTF for the given text only (satori can't read woff2).
-// Falls back to the built-in font if the network is unavailable at build time.
-async function font(family: string, weight: 500 | 700, text: string) {
-  try {
-    const q = `family=${family.replace(/ /g, '+')}:wght@${weight}&text=${encodeURIComponent(text)}`
-    const css = await (await fetch(`https://fonts.googleapis.com/css2?${q}`)).text()
-    const url = css.match(/src: url\((.+?)\) format\('(?:opentype|truetype)'\)/)?.[1]
-    if (!url) return null
-    return { name: family, data: await (await fetch(url)).arrayBuffer(), weight, style: 'normal' as const }
-  } catch {
-    return null
-  }
+const read = (file: string) => fs.readFile(path.join(/* turbopackIgnore: true */ process.cwd(), file))
+
+// Fonts ship in the repo (SIL OFL) so the build never depends on the network:
+// on Vercel the Google Fonts download failed, the font list came out empty and rendering crashed.
+async function fonts() {
+  const [display, mono] = await Promise.all([
+    read('assets/og/bricolage-grotesque-700.ttf'),
+    read('assets/og/jetbrains-mono-500.ttf'),
+  ])
+  return [
+    { name: 'Bricolage Grotesque', data: display, weight: 700 as const, style: 'normal' as const },
+    { name: 'JetBrains Mono', data: mono, weight: 500 as const, style: 'normal' as const },
+  ]
 }
 
 async function photo() {
-  const buf = await fs.readFile(path.join(/* turbopackIgnore: true */ process.cwd(), 'public/images/fahad.jpg'))
-  return `data:image/jpeg;base64,${buf.toString('base64')}`
+  return `data:image/jpeg;base64,${(await read('public/images/fahad.jpg')).toString('base64')}`
 }
 
 type Card = { kicker: string; title: string; withPhoto?: boolean }
 
 export async function ogImage({ kicker, title, withPhoto }: Card) {
   const footer = `${SITE.roles.join(' · ')}`
-  const text = `fahad.${kicker}${title}${footer}fahadmurtaza.me`
-  const fonts = (await Promise.all([font('Bricolage Grotesque', 700, text), font('JetBrains Mono', 500, text)])).filter(
-    (f): f is NonNullable<typeof f> => f !== null,
-  )
   const img = withPhoto ? await photo() : null
-  const display = fonts.some((f) => f.name === 'Bricolage Grotesque') ? 'Bricolage Grotesque' : undefined
-  const mono = fonts.some((f) => f.name === 'JetBrains Mono') ? 'JetBrains Mono' : undefined
+  const display = 'Bricolage Grotesque'
+  const mono = 'JetBrains Mono'
   const big = title.length > 60 ? 62 : title.length > 34 ? 76 : 96
 
   return new ImageResponse(
@@ -72,6 +68,6 @@ export async function ogImage({ kicker, title, withPhoto }: Card) {
         )}
       </div>
     ),
-    { ...OG_SIZE, fonts },
+    { ...OG_SIZE, fonts: await fonts() },
   )
 }
