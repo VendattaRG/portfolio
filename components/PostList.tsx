@@ -1,20 +1,10 @@
 import Link from 'next/link'
-import { formatDate, type Post } from '@/lib/posts'
+import { formatDate, tagLabel, type PostMeta } from '@/lib/blog'
 import s from './PostList.module.css'
 
-const TAG_LABEL: Record<string, string> = {
-  'ai-security': 'AI security',
-  agents: 'Agents',
-  'web-security': 'Web security',
-  appsec: 'AppSec',
-  career: 'Career',
-  'full-stack': 'Full stack',
-  cloud: 'Cloud',
-}
+type Props = { posts: PostMeta[]; withDescription?: boolean; withTags?: boolean }
 
-export const tagLabel = (t: string) => TAG_LABEL[t] ?? t
-
-export default function PostList({ posts, withDescription = false }: { posts: Post[]; withDescription?: boolean }) {
+export default function PostList({ posts, withDescription = false, withTags = false }: Props) {
   return (
     <ul className={s.list}>
       {posts.map((p) => (
@@ -27,6 +17,15 @@ export default function PostList({ posts, withDescription = false }: { posts: Po
             <span className={s.main}>
               <h3 className={s.t}>{p.title}</h3>
               {withDescription && <span className={s.d}>{p.description}</span>}
+              {withTags && (
+                <span className="chips">
+                  {p.tags.map((t) => (
+                    <span key={t} className="chip">
+                      {tagLabel(t)}
+                    </span>
+                  ))}
+                </span>
+              )}
             </span>
             <span className={s.ar} aria-hidden="true">
               ↗

@@ -1,17 +1,11 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import matter from 'gray-matter'
+import type { PostMeta } from './blog'
 
-export type Post = {
-  slug: string
-  title: string
-  description: string
-  date: string // YYYY-MM-DD
-  tags: string[]
-  draft: boolean
-  minutes: number
-  body: string
-}
+export { formatDate } from './blog'
+
+export type Post = PostMeta & { draft: boolean; body: string }
 
 const DIR = 'content/blog'
 
@@ -53,13 +47,4 @@ export function getAllPosts(dir = DIR): Post[] {
 
 export function getPost(slug: string, dir = DIR): Post | undefined {
   return getAllPosts(dir).find((p) => p.slug === slug)
-}
-
-export function formatDate(date: string): string {
-  return new Date(`${date}T00:00:00Z`).toLocaleDateString('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    timeZone: 'UTC',
-  })
 }
