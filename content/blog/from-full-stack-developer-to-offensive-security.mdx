@@ -1,0 +1,61 @@
+---
+title: 'From full-stack developer to offensive security engineer'
+description: 'Six years, five companies, two promotions and a Cyber Security degree. What changed when I moved from building software to breaking it, and why the building years were the best preparation.'
+date: '2026-09-18'
+tags: ['career', 'full-stack', 'cloud']
+draft: false
+---
+
+People sometimes ask how a full-stack developer ends up building autonomous penetration testing agents. The honest answer is that it didn't feel like a jump. Every job I had taught me where software breaks. At some point I stopped only fixing those places and started looking for them on purpose.
+
+This is the path, and what I'd tell a developer who wants to take a similar one.
+
+## Starting on the frontend
+
+My first job was as a frontend developer at OctalSol in Lahore, in October 2020. I built React and TypeScript interfaces for consumer web apps with a lot of traffic, and within that role I was promoted to full stack. That meant payment gateways, geolocation and social login, and end-to-end features in Node.js and React.
+
+Looking back, integrations taught me the most. Every payment provider and login provider has its own rules about tokens, callbacks and redirects, and almost every security bug I've since found in other people's apps lives in exactly that kind of glue code.
+
+The same year I started a BS in Cyber Security at Air University in Islamabad. For the next four years I was studying security while working as a developer, which turned out to be a very good combination. Every lecture had an immediate "wait, does our app do that?" moment.
+
+## Learning auth the hard way
+
+In 2022 I joined AirOverflow, where I worked on a microservices architecture and built an authentication system on OAuth 2.0 and JWT, designed to meet GDPR and PCI-DSS requirements.
+
+Building auth yourself is humbling. You learn that "logged in" is a much smaller guarantee than it sounds, that tokens end up in places you didn't plan for, and that every service boundary is a place where one side assumes the other side already checked. That last lesson is, more or less, the whole field of access-control bugs.
+
+## Owning whole products
+
+At Triomatic Solutions I led full-stack development of JukeBox, an AI-driven concert and venue management platform, in Django, Next.js and TypeScript. It had recommendation models over audience demographics, location and listening preferences, and it coordinated stage, lighting, sound and scheduling across concurrent events. I also ran the AWS and GCP infrastructure on Docker, Kubernetes and CI/CD.
+
+Then at Zigron I was promoted from backend developer to full stack and took ownership of DentaSmart, a dental-health SaaS, from an internal build through to a public consumer launch. That meant REST APIs for real-time medical image ingestion and clinician review, an AI second-opinion feature that turned clinical model output into guidance patients could read, and secure pipelines for patient health records under healthcare privacy rules.
+
+Owning products end to end changed how I think about security. When the patient data is yours to protect, threat modelling stops being an exercise. You start asking "how would I get at this if I wanted to?" about every feature, because nobody else is going to ask it for you.
+
+## Hackathons
+
+Two hackathons mattered along the way. I won Hack N' Connect at GIK Institute in 2023 and the Airtech Codecamp at Air University in 2024. Hackathons don't teach you much security directly, but they teach you to build something that works in a weekend, which is the skill you need to turn a security idea into a tool instead of a slide.
+
+## Moving to the other side of the table
+
+In May 2025 I joined Nua Security as an AI engineer working on pentest automation. I architected SHAX, an autonomous penetration testing agent built in Python and LangGraph that plans and runs multi-step engagements without an operator in the loop.
+
+This is where the building years paid off. An agent like that is a security problem and a software problem at the same time. It has to reason about attacks, but it also needs a modular tool layer, a reliable deployment on AWS and GCP, automated CI/CD, and the kind of engineering that lets it run day after day. Most of what makes it work isn't clever prompting. It's ordinary, careful software engineering.
+
+## What changed, and what didn't
+
+What changed is the question I ask first. As a developer, I asked "how do I make this work?" Now I ask "how does this fail?" first, and "how do I make it work?" second.
+
+What didn't change is that I still write a lot of code. Offensive security at this level is very much a building job.
+
+## If you're a developer thinking about security
+
+A few things I'd tell my 2020 self:
+
+- **Start with code you wrote.** Go back to an old project and attack it. You know where the shortcuts are, which makes it the fastest way to learn.
+- **Learn HTTP properly.** Headers, cookies, CORS, redirects, caching. Most web bugs are misunderstandings of HTTP.
+- **Own the auth code at least once.** Nothing teaches access control like being responsible for it.
+- **Build tools, not just exploits.** A script that checks one thing across a hundred endpoints is worth more than a clever one-off.
+- **Write it down.** Explaining a bug clearly to a developer is half the job, and writing is how you get good at it. That's partly why this blog exists.
+
+If you're on that path and want to compare notes, or you need someone who can both build your product and break it, [say hello](/contact).
