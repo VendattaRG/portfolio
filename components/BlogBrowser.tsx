@@ -89,7 +89,7 @@ export default function BlogBrowser({ posts }: { posts: PostMeta[] }) {
               : `${shown.length} of ${posts.length} posts`}
           </h2>
           {shown.length > 0 ? (
-            <PostList posts={shown} withDescription withTags />
+            <PostList posts={shown} withDescription withTags stacked />
           ) : (
             <div className={s.empty}>
               <p>

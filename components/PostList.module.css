@@ -68,6 +68,20 @@
   transform: translate(3px, -3px);
 }
 
+.stacked {
+  grid-template-columns: 1fr 40px;
+  gap: 12px 24px;
+}
+
+.stacked .meta {
+  grid-column: 1 / -1;
+}
+
+.stacked .meta b {
+  display: inline;
+  margin-right: 10px;
+}
+
 @media (max-width: 760px) {
   .row {
     grid-template-columns: 1fr 28px;

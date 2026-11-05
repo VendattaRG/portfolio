@@ -2,14 +2,15 @@ import Link from 'next/link'
 import { formatDate, tagLabel, type PostMeta } from '@/lib/blog'
 import s from './PostList.module.css'
 
-type Props = { posts: PostMeta[]; withDescription?: boolean; withTags?: boolean }
+/** `stacked` puts the date line above the title, for narrow columns */
+type Props = { posts: PostMeta[]; withDescription?: boolean; withTags?: boolean; stacked?: boolean }
 
-export default function PostList({ posts, withDescription = false, withTags = false }: Props) {
+export default function PostList({ posts, withDescription = false, withTags = false, stacked = false }: Props) {
   return (
     <ul className={s.list}>
       {posts.map((p) => (
         <li key={p.slug} className="reveal">
-          <Link href={`/blog/${p.slug}`} className={s.row}>
+          <Link href={`/blog/${p.slug}`} className={stacked ? `${s.row} ${s.stacked}` : s.row}>
             <span className={s.meta}>
               <b>{tagLabel(p.tags[0] ?? 'notes')}</b>
               <time dateTime={p.date}>{formatDate(p.date)}</time> · {p.minutes} min
