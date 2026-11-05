@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import CopyEmail from '@/components/CopyEmail'
+import CopyButton from '@/components/CopyButton'
 import JsonLd from '@/components/JsonLd'
 import { breadcrumbLd, pageMeta } from '@/lib/seo'
 import { SITE } from '@/lib/site'
@@ -42,7 +42,7 @@ export default function ContactPage() {
             <a href={`mailto:${SITE.email}?subject=Hello%20Fahad`} className="btn btn-ac">
               Write an email <span className="arrow">→</span>
             </a>
-            <CopyEmail email={SITE.email} className="btn btn-ghost" />
+            <CopyButton text={SITE.email} label="Copy address" className="btn btn-ghost" />
           </div>
         </div>
       </div>
