@@ -43,3 +43,15 @@ describe('formatDate', () => {
     expect(formatDate('2026-11-02')).toBe('2 Nov 2026')
   })
 })
+
+describe('real content', () => {
+  it('loads the published posts without errors', () => {
+    expect(getAllPosts().length).toBeGreaterThanOrEqual(3)
+  })
+
+  it('gives every service page at least one related post', async () => {
+    const { SERVICES } = await import('@/lib/services')
+    const tags = new Set(getAllPosts().flatMap((p) => p.tags))
+    for (const s of SERVICES) expect(s.postTags.some((t) => tags.has(t)), s.slug).toBe(true)
+  })
+})

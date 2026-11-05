@@ -1,0 +1,148 @@
+---
+title: 'Broken object-level authorization: how to find it and fix it'
+description: 'BOLA sits at the top of the OWASP API Security Top 10 for a reason. How to test for it in a few minutes, and how to fix it properly in Django and Express.'
+date: '2026-10-14'
+tags: ['web-security', 'appsec']
+draft: false
+---
+
+If I could only test one thing in an API, it would be this: can I read or change something that belongs to someone else, just by changing an ID?
+
+That bug is called broken object-level authorization (BOLA), sometimes still called IDOR. It's number one on the OWASP API Security Top 10, it is easy to introduce, and the damage is usually serious, because the data exposed is exactly what the API exists to protect. The good news is that it's also one of the easiest bugs to test for and to fix for good.
+
+## What BOLA actually is
+
+Two questions decide every request:
+
+- **Authentication:** who is this?
+- **Authorization:** is *this person* allowed to touch *this object*?
+
+Most frameworks make the first question easy. You add a decorator or a middleware and every request has a user. The second question is the one that gets missed, because it can't be answered once for the whole app. It has to be answered for every object, in every handler.
+
+A typical vulnerable request looks completely normal:
+
+```http
+GET /api/v2/invoices/1043 HTTP/1.1
+Host: app.example.com
+Authorization: Bearer eyJ...   (a valid token for a user in organization A)
+```
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{ "id": 1043, "organization": "B", "total": 18250, "customer_email": "..." }
+```
+
+The user is logged in, so authentication passed. But invoice 1043 belongs to organization B, and the API handed it over anyway.
+
+## Why it happens
+
+I've built enough APIs to know how this bug gets written. Nobody decides to skip authorization. It happens because:
+
+- The handler looks up the object by its ID, because that's what the URL contains.
+- The frontend only ever shows the user their own objects, so in normal use nothing looks wrong.
+- Tests are written with one user, so they all pass.
+- UUIDs feel like protection. They aren't. IDs leak through URLs, logs, exports, emails and other API responses.
+
+## How to find it
+
+You need two accounts in two different tenants (or two users with different permissions), and a proxy such as Burp or Caido. Then:
+
+1. **Log in as user A** and use the app normally. Record every request that contains an object ID: in the path, the query string, the body or a header.
+2. **Log in as user B** and collect the IDs of B's objects.
+3. **Replay A's requests with B's IDs**, using A's session. Any 200 that returns B's data is a finding.
+4. **Try every verb.** `GET` is often fixed while `PUT`, `PATCH` and `DELETE` on the same path are not. Write access is worse than read access.
+5. **Check nested and indirect paths.** `/orgs/A/invoices/1043` might check the org in the URL but not that the invoice belongs to it. Export, download, share and "duplicate" features are frequent offenders.
+6. **Look at bulk and search endpoints.** A filter like `?user_id=` or a GraphQL query that accepts an ID is the same bug with a different shape.
+
+Doing this by hand on a large API is tedious, which is exactly why it's a good job for an autonomous agent. The pattern is mechanical: collect IDs per identity, replay across identities, compare responses.
+
+## How to fix it in Django
+
+Here is the vulnerable version:
+
+```python
+# views.py (vulnerable)
+@login_required
+def invoice_detail(request, invoice_id):
+    invoice = get_object_or_404(Invoice, id=invoice_id)
+    return JsonResponse(invoice.to_dict())
+```
+
+The fix is to make ownership part of the lookup itself, so the database never returns an object the user can't access:
+
+```python
+# views.py (fixed)
+@login_required
+def invoice_detail(request, invoice_id):
+    invoice = get_object_or_404(
+        Invoice, id=invoice_id, organization=request.user.organization
+    )
+    return JsonResponse(invoice.to_dict())
+```
+
+With Django REST Framework, put the rule in `get_queryset` so every action (retrieve, update, delete) inherits it:
+
+```python
+class InvoiceViewSet(viewsets.ModelViewSet):
+    serializer_class = InvoiceSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Invoice.objects.filter(organization=self.request.user.organization)
+```
+
+## How to fix it in Express
+
+The vulnerable version, using an ORM such as Prisma:
+
+```js
+// vulnerable
+app.get('/api/invoices/:id', requireAuth, async (req, res) => {
+  const invoice = await db.invoice.findUnique({ where: { id: req.params.id } })
+  if (!invoice) return res.status(404).end()
+  res.json(invoice)
+})
+```
+
+The fixed version scopes the query to the caller's organization:
+
+```js
+// fixed
+app.get('/api/invoices/:id', requireAuth, async (req, res) => {
+  const invoice = await db.invoice.findFirst({
+    where: { id: req.params.id, orgId: req.user.orgId },
+  })
+  if (!invoice) return res.status(404).end()
+  res.json(invoice)
+})
+```
+
+Do the same for updates and deletes. With `updateMany` or `deleteMany` scoped by `orgId`, check that exactly one row was affected, and return 404 if none was.
+
+## Patterns that keep it fixed
+
+Fixing one endpoint is easy. Keeping a whole API fixed takes a few habits:
+
+- **Scope by default.** Make the scoped query the easy path. A helper like `invoicesFor(user)` or a tenant-aware manager means a developer has to go out of their way to write an unscoped query.
+- **Return 404, not 403.** For objects the user shouldn't know exist, "not found" avoids confirming that the ID is valid.
+- **Don't trust IDs from the client for ownership.** The organization comes from the session, never from the request body.
+- **Test with two users.** One regression test per resource is enough to stop this coming back:
+
+```python
+def test_cannot_read_other_orgs_invoice(client, user_a, invoice_of_org_b):
+    client.force_login(user_a)
+    response = client.get(f"/api/invoices/{invoice_of_org_b.id}/")
+    assert response.status_code == 404
+```
+
+## A quick checklist
+
+- Two test accounts in different tenants, always.
+- Every endpoint that takes an ID, every verb.
+- Nested, bulk, export and search endpoints too.
+- Ownership enforced in the query, not after it.
+- A two-user regression test for each resource.
+
+BOLA is boring, and that's the point. It's a bug you can remove systematically. If you'd like a second pair of eyes on your API, that's [exactly what I do](/services/web-application-penetration-testing).
