@@ -37,10 +37,12 @@ function read(dir: string, file: string): Post {
 }
 
 export function getAllPosts(dir = DIR): Post[] {
+  // Pages are static, so the bundler doesn't need to trace these reads.
+  const abs = path.join(/* turbopackIgnore: true */ process.cwd(), dir)
   return fs
-    .readdirSync(dir)
+    .readdirSync(abs)
     .filter((f) => f.endsWith('.mdx'))
-    .map((f) => read(dir, f))
+    .map((f) => read(abs, f))
     .filter((p) => !p.draft)
     .sort((a, b) => b.date.localeCompare(a.date))
 }
