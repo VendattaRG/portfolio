@@ -126,7 +126,7 @@ export default async function ServicePage({ params }: Props) {
         <ul className={s.proj}>
           {projects.map((p) => (
             <li key={p.key} className="reveal">
-              <Link href="/#work" className={s.pc}>
+              <Link href={`/#project-${p.key}`} className={s.pc}>
                 <small>{p.badge}</small>
                 <h3>{p.name}</h3>
                 <p>{p.sub}</p>

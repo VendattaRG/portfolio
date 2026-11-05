@@ -1,12 +1,18 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Project } from '@/lib/data'
 import s from './WorkShowcase.module.css'
 
 // All panels stay in the HTML (good for search); only the active one is visible and focusable.
 export default function WorkShowcase({ projects }: { projects: Project[] }) {
   const [active, setActive] = useState(projects[0].key)
+
+  // links like /#project-dentasmart (from the service pages) open that project
+  useEffect(() => {
+    const key = window.location.hash.replace('#project-', '')
+    if (projects.some((p) => p.key === key)) setActive(key as Project['key'])
+  }, [projects])
 
   return (
     <div className={s.wrap}>
