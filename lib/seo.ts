@@ -17,10 +17,15 @@ type MetaInput = {
   type?: 'website' | 'article'
   publishedTime?: string
   tags?: string[]
+  /** path of this page's own share image; defaults to the site-wide one */
+  image?: string
 }
 
-export function pageMeta({ title, description, path, absoluteTitle, type = 'website', publishedTime, tags }: MetaInput): Metadata {
+export function pageMeta(input: MetaInput): Metadata {
+  const { title, description, path, absoluteTitle, type = 'website', publishedTime, tags, image = '/opengraph-image' } = input
   const url = abs(path)
+  // Page-level openGraph replaces the parent's (and wins over opengraph-image files), so name the image explicitly.
+  const images = [{ url: abs(image), width: 1200, height: 630, alt: title }]
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
@@ -32,6 +37,7 @@ export function pageMeta({ title, description, path, absoluteTitle, type = 'webs
       siteName: SITE.name,
       locale: 'en_US',
       type,
+      images,
       ...(type === 'article' && { publishedTime, authors: [SITE.url], tags }),
     },
     twitter: { card: 'summary_large_image', title, description },

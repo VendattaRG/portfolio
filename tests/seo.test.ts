@@ -20,6 +20,18 @@ describe('pageMeta', () => {
     expect((m.openGraph as { url?: string }).url).toBe('https://www.fahadmurtaza.me/blog')
     expect((m.twitter as { card?: string }).card).toBe('summary_large_image')
   })
+
+  it('falls back to the site share image, since page-level openGraph replaces the inherited one', () => {
+    const m = pageMeta({ title: 'Contact', description: 'd'.repeat(60), path: '/contact' })
+    const img = [(m.openGraph as { images?: unknown }).images].flat()[0] as { url: string }
+    expect(img.url).toBe(abs('/opengraph-image'))
+  })
+
+  it("uses a page's own share image when it has one", () => {
+    const m = pageMeta({ title: 'Post', description: 'd'.repeat(60), path: '/blog/x', image: '/blog/x/opengraph-image' })
+    const img = [(m.openGraph as { images?: unknown }).images].flat()[0] as { url: string }
+    expect(img.url).toBe(abs('/blog/x/opengraph-image'))
+  })
 })
 
 describe('structured data', () => {

@@ -1,7 +1,16 @@
 import Link from 'next/link'
 import CopyEmail from '@/components/CopyEmail'
+import JsonLd from '@/components/JsonLd'
+import { breadcrumbLd, pageMeta } from '@/lib/seo'
 import { SITE } from '@/lib/site'
 import s from './contact.module.css'
+
+export const metadata = pageMeta({
+  title: 'Contact',
+  description:
+    'Contact Muhammad Fahad Murtaza about remote roles in offensive and AI security engineering, or freelance security and software projects.',
+  path: '/contact',
+})
 
 const INCLUDE = [
   "What you're building, or what's already running",
@@ -13,6 +22,7 @@ const INCLUDE = [
 export default function ContactPage() {
   return (
     <section className={`wrap ${s.page}`} aria-labelledby="contact-h">
+      <JsonLd data={breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Contact', path: '/contact' }])} />
       <div className={s.main}>
         <span className="kicker">
           <b>●</b>Open to remote roles &amp; projects

@@ -1,11 +1,21 @@
 import Link from 'next/link'
 import ContactBlock from '@/components/ContactBlock'
+import JsonLd from '@/components/JsonLd'
+import { breadcrumbLd, pageMeta } from '@/lib/seo'
 import { SERVICES } from '@/lib/services'
 import s from './services.module.css'
+
+export const metadata = pageMeta({
+  title: 'Services',
+  description:
+    'Security, AI and full-stack services: AI pentest automation, web app penetration testing, AI agent development, full-stack and cloud work.',
+  path: '/services',
+})
 
 export default function ServicesPage() {
   return (
     <>
+      <JsonLd data={breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Services', path: '/services' }])} />
       <header className={`wrap ${s.head}`}>
         <span className="kicker">
           <b>—</b>Services

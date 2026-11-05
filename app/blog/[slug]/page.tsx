@@ -1,10 +1,13 @@
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { MDXRemote, type MDXRemoteProps } from 'next-mdx-remote/rsc'
 import rehypePrettyCode from 'rehype-pretty-code'
+import JsonLd from '@/components/JsonLd'
 import { tagLabel } from '@/components/PostList'
-import { formatDate, getAllPosts } from '@/lib/posts'
+import { formatDate, getAllPosts, getPost } from '@/lib/posts'
+import { blogPostingLd, breadcrumbLd, pageMeta } from '@/lib/seo'
 import { SERVICES } from '@/lib/services'
 import { SITE } from '@/lib/site'
 import s from '../blog.module.css'
@@ -15,6 +18,20 @@ export const dynamicParams = false
 
 export function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }))
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const post = getPost((await params).slug)
+  if (!post) return {}
+  return pageMeta({
+    title: post.title,
+    description: post.description,
+    path: `/blog/${post.slug}`,
+    type: 'article',
+    publishedTime: post.date,
+    tags: post.tags,
+    image: `/blog/${post.slug}/opengraph-image`,
+  })
 }
 
 const options: MDXRemoteProps['options'] = {
@@ -34,6 +51,16 @@ export default async function PostPage({ params }: Props) {
 
   return (
     <article>
+      <JsonLd
+        data={[
+          blogPostingLd(post),
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/blog' },
+            { name: post.title, path: `/blog/${post.slug}` },
+          ]),
+        ]}
+      />
       <header className={`wrap ${s.head} ${s.postHead}`}>
         <nav aria-label="Breadcrumb" className={s.crumbs}>
           <ol>

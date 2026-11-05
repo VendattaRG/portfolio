@@ -3,12 +3,21 @@ import Link from 'next/link'
 import ContactBlock from '@/components/ContactBlock'
 import PostList from '@/components/PostList'
 import SectionHead from '@/components/SectionHead'
+import JsonLd from '@/components/JsonLd'
 import WorkShowcase from '@/components/WorkShowcase'
 import { AWARDS, COMPANIES, EDUCATION, EXPERIENCE, PROJECTS, SKILLS, STATS } from '@/lib/data'
 import { getAllPosts } from '@/lib/posts'
 import { SERVICES } from '@/lib/services'
+import { pageMeta, personLd, profilePageLd, websiteLd } from '@/lib/seo'
 import { SITE } from '@/lib/site'
 import s from './page.module.css'
+
+export const metadata = pageMeta({
+  title: `${SITE.name} · AI Security Engineer & Full Stack Developer`,
+  description: SITE.description,
+  path: '/',
+  absoluteTitle: true,
+})
 
 export default function Home() {
   const posts = getAllPosts().slice(0, 3)
@@ -16,6 +25,7 @@ export default function Home() {
 
   return (
     <>
+      <JsonLd data={[personLd(), websiteLd(), profilePageLd()]} />
       {/* HERO */}
       <section className={`wrap ${s.hero}`} aria-labelledby="hero-name">
         <div className={s.heroText}>

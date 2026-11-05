@@ -9,8 +9,9 @@ export const SITE = {
   github: 'https://github.com/VendattaRG',
   linkedin: 'https://www.linkedin.com/in/muhammad-fahad-murtaza',
   roles: ['Security Researcher', 'AI Engineer', 'Full Stack Developer'],
+  // also the home page meta description: keep it 50–160 characters
   description:
-    'Muhammad Fahad Murtaza is an AI security engineer in Islamabad who builds autonomous penetration testing agents, tests web applications and ships full-stack software. Open to remote work.',
+    'AI security engineer in Islamabad building autonomous pentest agents, testing web apps and shipping full-stack software. Open to remote roles and projects.',
 }
 
 export const NAV = [

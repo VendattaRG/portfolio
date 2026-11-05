@@ -1,9 +1,12 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import ContactBlock from '@/components/ContactBlock'
+import JsonLd from '@/components/JsonLd'
 import PostList from '@/components/PostList'
 import { PROJECTS } from '@/lib/data'
 import { getAllPosts } from '@/lib/posts'
+import { breadcrumbLd, pageMeta, serviceLd } from '@/lib/seo'
 import { SERVICES, getService } from '@/lib/services'
 import s from '../services.module.css'
 
@@ -13,6 +16,17 @@ export const dynamicParams = false
 
 export function generateStaticParams() {
   return SERVICES.map((sv) => ({ slug: sv.slug }))
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const sv = getService((await params).slug)
+  if (!sv) return {}
+  return pageMeta({
+    title: sv.metaTitle,
+    description: sv.metaDescription,
+    path: `/services/${sv.slug}`,
+    image: `/services/${sv.slug}/opengraph-image`,
+  })
 }
 
 export default async function ServicePage({ params }: Props) {
@@ -27,6 +41,16 @@ export default async function ServicePage({ params }: Props) {
 
   return (
     <>
+      <JsonLd
+        data={[
+          serviceLd(sv),
+          breadcrumbLd([
+            { name: 'Home', path: '/' },
+            { name: 'Services', path: '/services' },
+            { name: sv.title, path: `/services/${sv.slug}` },
+          ]),
+        ]}
+      />
       <header className={`wrap ${s.head}`}>
         <nav aria-label="Breadcrumb" className={s.crumbs}>
           <ol>

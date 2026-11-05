@@ -1,11 +1,21 @@
+import JsonLd from '@/components/JsonLd'
 import PostList from '@/components/PostList'
+import { breadcrumbLd, pageMeta } from '@/lib/seo'
 import { getAllPosts } from '@/lib/posts'
 import s from './blog.module.css'
+
+export const metadata = pageMeta({
+  title: 'Blog',
+  description:
+    'Long-form posts by Muhammad Fahad Murtaza on offensive security, autonomous AI agents, web application security and building software.',
+  path: '/blog',
+})
 
 export default function BlogPage() {
   const posts = getAllPosts()
   return (
     <>
+      <JsonLd data={breadcrumbLd([{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }])} />
       <header className={`wrap ${s.head}`}>
         <span className="kicker">
           <b>—</b>Writing
