@@ -9,6 +9,7 @@ export default function Reveal() {
   const path = usePathname()
 
   useEffect(() => {
+    ;(window as Window & { __reveal?: boolean }).__reveal = true // tells the head script the app started
     const els = document.querySelectorAll('.reveal:not(.in)')
     if (!('IntersectionObserver' in window)) {
       els.forEach((el) => el.classList.add('in'))

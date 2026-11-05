@@ -21,6 +21,11 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false, email: false, address: false },
 }
 
+// Turn on reveal animations before paint, but if the app hasn't started within 3s
+// (slow network, failed chunk), drop the gate so content is never stuck invisible.
+const REVEAL_GATE =
+  "document.documentElement.classList.add('js');setTimeout(function(){if(!window.__reveal)document.documentElement.classList.remove('js')},3000)"
+
 export const viewport: Viewport = { themeColor: '#0d0e12', colorScheme: 'dark' }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -28,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // The inline script adds the `js` class before paint, so React sees a different class list.
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        <script dangerouslySetInnerHTML={{ __html: REVEAL_GATE }} />
       </head>
       <body>
         <a href="#main" className="skip">
