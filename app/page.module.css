@@ -39,7 +39,7 @@
 .name {
   font-family: var(--f-display), sans-serif;
   font-weight: 700;
-  font-size: clamp(3.3rem, 1.4rem + 7.6vw, 7.6rem);
+  font-size: clamp(3.3rem, 1.4rem + 7.6vw, 8.8rem);
   line-height: 0.9;
   letter-spacing: -0.05em;
   margin-bottom: 28px;
@@ -77,7 +77,7 @@
 
 .pic {
   position: relative;
-  height: clamp(400px, 40vw, 560px);
+  height: clamp(400px, 38vw, 660px);
 }
 
 .card {

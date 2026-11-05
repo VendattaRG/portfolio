@@ -16,7 +16,7 @@
 
   --radius: 14px;
   --radius-lg: 18px;
-  --gutter: clamp(16px, 4vw, 56px);
+  --gutter: clamp(16px, 4vw, 64px);
   --sec-gap: clamp(72px, 10vw, 128px);
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 
@@ -118,7 +118,7 @@ button {
 /* ── layout ── */
 .wrap {
   width: 100%;
-  max-width: 1280px;
+  max-width: 1560px;
   margin-inline: auto;
   padding-inline: var(--gutter);
 }
@@ -152,7 +152,7 @@ button {
 .h2 {
   font-family: var(--f-display), sans-serif;
   font-weight: 600;
-  font-size: clamp(2.1rem, 1.2rem + 3.6vw, 3.9rem);
+  font-size: clamp(2.1rem, 1.2rem + 3.6vw, 4.4rem);
   line-height: 1.02;
   letter-spacing: -0.04em;
 }
@@ -165,7 +165,7 @@ button {
 .title {
   font-family: var(--f-display), sans-serif;
   font-weight: 700;
-  font-size: clamp(2.8rem, 1.4rem + 6vw, 6.2rem);
+  font-size: clamp(2.8rem, 1.4rem + 6vw, 7rem);
   line-height: 0.92;
   letter-spacing: -0.05em;
 }
