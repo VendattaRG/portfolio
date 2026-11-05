@@ -1,5 +1,5 @@
 import JsonLd from '@/components/JsonLd'
-import PostList from '@/components/PostList'
+import BlogBrowser from '@/components/BlogBrowser'
 import { breadcrumbLd, pageMeta } from '@/lib/seo'
 import { getAllPosts } from '@/lib/posts'
 import s from './blog.module.css'
@@ -26,12 +26,10 @@ export default function BlogPage() {
           code, and written for people who build things.
         </p>
       </header>
-      <section className="wrap" aria-labelledby="all-posts">
-        <h2 id="all-posts" className="sr-only">
-          All posts
-        </h2>
-        <PostList posts={posts} withDescription />
-      </section>
+      <div className="wrap">
+        {/* only the listing fields go to the browser, not the post bodies */}
+        <BlogBrowser posts={posts.map(({ slug, title, description, date, tags, minutes }) => ({ slug, title, description, date, tags, minutes }))} />
+      </div>
     </>
   )
 }

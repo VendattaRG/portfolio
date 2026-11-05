@@ -1,0 +1,181 @@
+/* search and filters only work with JS; without it, just show the full list */
+:global(html:not(.js)) .search,
+:global(html:not(.js)) .side {
+  display: none;
+}
+
+.search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 640px;
+  margin-bottom: clamp(32px, 4vw, 48px);
+  color: var(--mut);
+}
+
+.search svg {
+  position: absolute;
+  left: 18px;
+  pointer-events: none;
+}
+
+.search input {
+  width: 100%;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  background: var(--bg2);
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  padding: 15px 48px 15px 48px;
+  transition: border-color 0.2s;
+}
+
+.search input::placeholder {
+  color: var(--dim-text);
+}
+
+.search input:focus {
+  outline: none;
+  border-color: var(--ac);
+}
+
+/* the browser's own clear button; ours is styled to match */
+.search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.x {
+  position: absolute;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mut);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.x:hover {
+  color: var(--ink);
+  background: var(--line);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: clamp(32px, 4vw, 64px);
+  align-items: start;
+}
+
+.side {
+  position: sticky;
+  top: 24px;
+}
+
+.sh,
+.count {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim-text);
+  margin-bottom: 14px;
+}
+
+.count {
+  padding-bottom: 14px;
+  margin-bottom: 0;
+}
+
+.topics {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.topics button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  color: var(--soft);
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.topics button span {
+  font-family: var(--f-mono), monospace;
+  font-size: 0.75rem;
+  color: var(--dim-text);
+}
+
+.topics button:hover {
+  background: var(--bg2);
+  color: var(--ink);
+}
+
+.topics button[aria-pressed='true'] {
+  background: var(--bg2);
+  border-color: #ff5c4766;
+  color: var(--ac);
+}
+
+.topics button[aria-pressed='true'] span {
+  color: var(--ac);
+}
+
+.empty {
+  border-top: 1px solid var(--line);
+  padding: 40px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  color: var(--soft);
+  font-size: 1.05rem;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .side {
+    position: static;
+    min-width: 0;
+  }
+
+  /* topics become one row of chips that scrolls sideways inside itself */
+  .topics {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+  }
+
+  .topics button {
+    width: auto;
+    white-space: nowrap;
+    border-color: var(--line2);
+    border-radius: 999px;
+    padding: 8px 14px;
+  }
+}
