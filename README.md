@@ -1,38 +1,23 @@
-# **Portfolio**
+# fahadmurtaza.me
 
-![Magic Portfolio](public/images/cover.png)
+Personal site of Muhammad Fahad Murtaza: security researcher, AI engineer and full-stack developer.
 
+Next.js (App Router), statically generated. No backend.
 
-# **Getting started**
-
-Magic Portfolio was built with [Once UI](https://once-ui.com) for [Next.js](https://nextjs.org). It requires Node.js v18.17+.
-
-**1. Clone the repository**
-```
-git clone https://github.com/once-ui-system/magic-portfolio.git
-```
-
-**2. Install dependencies**
-```
+```bash
 npm install
+npm run dev        # http://localhost:3000
+npm test           # unit tests (lib/)
+npm run build && npm start
+npm run check:seo  # checks every page in the sitemap against a running server
 ```
 
-**3. Run dev server**
-```
-npm run dev
-```
+## Where things live
 
-**4. Edit config**
-```
-src/app/resources/config
-```
+- `lib/site.ts`: name, domain, email and social links
+- `lib/data.ts`: experience, projects, skills, education and awards (from the CV)
+- `lib/services.ts`: the five service pages
+- `content/blog/*.mdx`: blog posts (frontmatter: `title`, `description`, `date` as YYYY-MM-DD, `tags`, `draft`)
+- `public/images/fahad.jpg`: portrait
 
-**5. Edit content**
-```
-src/app/resources/content
-```
-
-**6. Create blog posts / projects**
-```
-Add a new .mdx file to src/app/blog/posts or src/app/work/projects
-```
+Add a post by dropping a new `.mdx` file in `content/blog/`. It shows up on the blog, the sitemap and `/llms.txt` on the next build.

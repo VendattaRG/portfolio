@@ -1,0 +1,403 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=JetBrains+Mono:wght@400;500&family=Figtree:wght@400;500;600&display=swap');
+
+.site { container-type:inline-size; border-radius:8px; overflow:hidden; box-shadow:0 10px 40px rgba(0,0,0,.35);
+  --bg:#0D0E12; --bg2:#13141A; --line:#23242B; --line2:#2E2F38; --ink:#F2F1EA; --mut:#9A9BA3; --dim:#6E6F78; --ac:#FF5C47; --paper:#F2F1EA;
+  background:var(--bg); color:var(--ink); font-family:'Figtree',sans-serif; }
+.site * { box-sizing:border-box; }
+.bg-mono { font-family:'JetBrains Mono',monospace; }
+.disp { font-family:'Bricolage Grotesque',sans-serif; }
+.pad { padding-left:4cqw; padding-right:4cqw; }
+
+/* nav */
+.nav { display:flex; align-items:center; justify-content:space-between; padding:2cqw 4cqw; font-size:1.15cqw; position:relative; z-index:3; }
+.logo { font-family:'Bricolage Grotesque'; font-weight:800; font-size:1.7cqw; letter-spacing:-.04em; }
+.logo span { color:var(--ac); }
+.links { display:flex; gap:2.8cqw; color:var(--mut); }
+.links b { color:var(--ink); font-weight:500; }
+.cta { background:var(--ac); color:#0D0E12; padding:.9cqw 1.6cqw; border-radius:99px; font-weight:600; }
+
+/* hero */
+.hero { display:grid; grid-template-columns:1.35fr 1fr; gap:3cqw; padding:3cqw 4cqw 0; align-items:end; }
+.roles { display:flex; flex-wrap:wrap; gap:.8cqw; margin-bottom:2.4cqw; }
+.roles span { font:500 1cqw/1 'JetBrains Mono',monospace; border:1px solid var(--line2); padding:.75cqw 1.1cqw; border-radius:99px; color:#cfd0d6; display:flex; align-items:center; gap:.7cqw; }
+.roles span i { width:.6cqw; height:.6cqw; border-radius:50%; background:var(--ac); display:block; }
+h1.name { font-family:'Bricolage Grotesque'; font-weight:700; font-size:8.6cqw; line-height:.9; letter-spacing:-.05em; margin:0 0 2.6cqw; }
+h1.name .m { display:block; font-size:4.2cqw; font-weight:400; letter-spacing:-.03em; color:var(--mut); margin-bottom:.6cqw; }
+.tag { font-size:1.65cqw; line-height:1.5; color:#c4c5cc; max-width:46cqw; margin:0 0 3cqw; }
+.tag em { font-style:normal; font-weight:600; color:var(--ac); }
+.btns { display:flex; gap:1.2cqw; margin-bottom:4cqw; font-size:1.2cqw; font-weight:600; }
+.btns .p { background:var(--paper); color:#0D0E12; padding:1.2cqw 2cqw; border-radius:99px; }
+.btns .g { border:1px solid var(--line2); padding:1.2cqw 2cqw; border-radius:99px; }
+.pic { position:relative; height:46cqw; }
+.pic .card { position:absolute; inset:0; border-radius:1.6cqw 1.6cqw 0 0; background:var(--paper); overflow:hidden; }
+.pic .card img { position:absolute; left:50%; bottom:0; transform:translateX(-50%); height:104%; mix-blend-mode:multiply; filter:contrast(1.05); }
+.pic .now { position:absolute; left:-3.5cqw; bottom:5cqw; background:#16171C; border:1px solid var(--line2); color:var(--ink); border-radius:1.2cqw; padding:1.3cqw 1.6cqw; font-size:1.05cqw; line-height:1.45; box-shadow:0 1.2cqw 3cqw #000a; }
+.pic .now small { display:flex; align-items:center; gap:.6cqw; font:500 .85cqw/1 'JetBrains Mono',monospace; letter-spacing:.1em; color:var(--mut); margin-bottom:.7cqw; }
+.pic .now small i { width:.6cqw; height:.6cqw; border-radius:50%; background:#3fbf6f; display:block; box-shadow:0 0 0 .35cqw #3fbf6f22; }
+.pic .now b { font-size:1.3cqw; font-weight:600; }
+.pic .now span { color:var(--mut); }
+.strip { display:flex; justify-content:space-between; align-items:center; padding:1.8cqw 4cqw; border-top:1px solid var(--line); border-bottom:1px solid var(--line); font-size:1.15cqw; color:var(--dim); }
+.strip .co { display:flex; gap:3.4cqw; color:#c4c5cc; font-family:'Bricolage Grotesque'; font-weight:600; letter-spacing:-.02em; font-size:1.5cqw; }
+
+/* section scaffolding */
+.sec { padding:7cqw 4cqw 0; }
+.sec-h { display:grid; grid-template-columns: 1fr 2.2fr; gap:3cqw; margin-bottom:3.6cqw; align-items:end; }
+.kicker { font:500 1cqw/1 'JetBrains Mono',monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--mut); display:flex; gap:1cqw; align-items:center; align-self:start; padding-top:1.2cqw; }
+.kicker b { color:var(--ac); font-weight:500; }
+.h2 { font-family:'Bricolage Grotesque'; font-weight:600; font-size:4.6cqw; line-height:1; letter-spacing:-.04em; margin:0; }
+.h2 span { color:var(--dim); }
+
+/* about */
+.about { display:grid; grid-template-columns:1fr 2.2fr; gap:3cqw; }
+.about .txt p { font-size:1.55cqw; line-height:1.6; color:#c4c5cc; margin:0 0 1.6cqw; max-width:60cqw; }
+.about .txt p:first-child { font-family:'Bricolage Grotesque'; font-size:2.6cqw; line-height:1.25; letter-spacing:-.02em; color:var(--ink); }
+.about .txt p:first-child em { font-style:normal; color:var(--ac); }
+.stats { display:grid; grid-template-columns:repeat(4,1fr); margin-top:3.6cqw; border-top:1px solid var(--line); }
+.stats div { padding:2.2cqw 2cqw 0 0; }
+.stats div + div { padding-left:2cqw; border-left:1px solid var(--line); }
+.stats b { display:block; font-family:'Bricolage Grotesque'; font-weight:600; font-size:5cqw; letter-spacing:-.05em; line-height:1; }
+.stats b sup { font-size:2cqw; color:var(--ac); vertical-align: top; margin-left:.3cqw; }
+.stats span { font-size:1.1cqw; color:var(--mut); display:block; margin-top:.8cqw; line-height:1.4; }
+
+/* services */
+.svc { display:grid; grid-template-columns:repeat(3,1fr); gap:1.2cqw; }
+.svc .s { background:var(--bg2); border:1px solid var(--line); border-radius:1.2cqw; padding:2.4cqw; min-height:22cqw; display:flex; flex-direction:column; transition:border-color .25s, transform .25s; }
+.svc .s:hover { border-color:var(--ac); transform:translateY(-.3cqw); }
+.svc .s .n { font:500 .95cqw/1 'JetBrains Mono',monospace; color:var(--dim); display:flex; justify-content:space-between; }
+.svc .s .n i { font-style:normal; color:var(--ink); font-size:1.6cqw; transition:transform .25s, color .25s; }
+.svc .s:hover .n i { transform:translate(.3cqw,-.3cqw); color:var(--ac); }
+.svc .s h3 { font-family:'Bricolage Grotesque'; font-weight:600; font-size:2.3cqw; line-height:1.05; letter-spacing:-.03em; margin:auto 0 1.2cqw; padding-top:3cqw; }
+.svc .s p { font-size:1.15cqw; line-height:1.55; color:var(--mut); margin:0 0 1.6cqw; }
+.chips { display:flex; flex-wrap:wrap; gap:.6cqw; }
+.chips span { font:500 .85cqw/1 'JetBrains Mono',monospace; border:1px solid var(--line2); color:#b9bac1; padding:.6cqw .8cqw; border-radius:99px; }
+.svc .s.all { background:transparent; border-style:dashed; justify-content:center; align-items:flex-start; }
+.svc .s.all h3 { margin:0 0 1cqw; padding:0; }
+.svc .s.all .lk { font-weight:600; font-size:1.2cqw; border-bottom:1px solid var(--ac); padding-bottom:.3cqw; }
+
+/* work */
+.feat { display:grid; grid-template-columns:1.05fr 1fr; background:var(--bg2); border:1px solid var(--line); border-radius:1.4cqw; overflow:hidden; margin-bottom:1.2cqw; }
+.feat .l { padding:3.2cqw; display:flex; flex-direction:column; }
+.feat .badge { align-self:flex-start; font:500 .9cqw/1 'JetBrains Mono',monospace; letter-spacing:.1em; color:var(--ac); border:1px solid #FF5C4755; padding:.7cqw 1cqw; border-radius:99px; margin-bottom:2.6cqw; }
+.feat h3 { font-family:'Bricolage Grotesque'; font-weight:700; font-size:5.4cqw; letter-spacing:-.05em; line-height:.9; margin:0 0 1cqw; }
+.feat .sub { font-size:1.5cqw; color:#c4c5cc; margin:0 0 2cqw; }
+.feat ul { margin:0 0 2.6cqw; padding:0; list-style:none; }
+.feat li { font-size:1.2cqw; line-height:1.5; color:var(--mut); padding:.8cqw 0 .8cqw 2cqw; border-top:1px solid var(--line); position:relative; }
+.feat li::before { content:'→'; position:absolute; left:0; color:var(--ac); }
+.feat .r { background:#0A0B0E; border-left:1px solid var(--line); padding:2.4cqw; font:400 1.02cqw/1.9 'JetBrains Mono',monospace; color:#8d8e96; display:flex; flex-direction:column; justify-content:center; }
+.feat .r .h { color:var(--dim); border-bottom:1px solid var(--line); padding-bottom:1cqw; margin-bottom:1.2cqw; display:flex; justify-content:space-between; }
+.feat .r .k { color:var(--ink); }
+.feat .r .x { color:var(--ac); }
+.feat .r .ok { color:#3fbf6f; }
+.stage { display:grid; margin-bottom:1.2cqw; }
+.stage .feat { grid-area:1/1; margin:0; opacity:0; visibility:hidden; transform:translateY(.8cqw); transition:opacity .35s, transform .35s, visibility .35s; }
+.stage .feat.on { opacity:1; visibility:visible; transform:none; }
+.proj { display:grid; grid-template-columns:repeat(5,1fr); gap:1.2cqw; }
+.proj .p { position:relative; border:1px solid var(--line); border-radius:1.2cqw; padding:2cqw; min-height:15cqw; display:flex; flex-direction:column; cursor:pointer; overflow:hidden; transition:border-color .25s, background .25s; }
+.proj .p::before { content:''; position:absolute; left:0; top:0; height:.25cqw; width:100%; background:var(--ac); transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.2,.7,.1,1); }
+.proj .p:hover { border-color:var(--line2); }
+.proj .p.on { border-color:#FF5C4766; background:var(--bg2); }
+.proj .p.on::before { transform:scaleX(1); }
+.proj .p small { font:500 .82cqw/1.4 'JetBrains Mono',monospace; color:var(--dim); letter-spacing:.06em; text-transform:uppercase; display:flex; justify-content:space-between; }
+.proj .p small i { font-style:normal; color:var(--ac); opacity:0; transition:opacity .25s; }
+.proj .p.on small i { opacity:1; }
+.proj .p h4 { font-family:'Bricolage Grotesque'; font-weight:600; font-size:2.2cqw; letter-spacing:-.03em; margin:auto 0 .6cqw; padding-top:2cqw; transition:color .25s; }
+.proj .p.on h4 { color:var(--ac); }
+.proj .p p { font-size:1.02cqw; line-height:1.45; color:var(--mut); margin:0; }
+
+/* experience */
+.exp .r { display:grid; grid-template-columns: 1fr 1.25fr 1.4fr .6fr; gap:2cqw; padding:2.2cqw 0; border-top:1px solid var(--line); align-items:baseline; }
+.exp .r:last-child { border-bottom:1px solid var(--line); }
+.exp .d { font:500 1cqw/1 'JetBrains Mono',monospace; color:var(--mut); }
+.exp .d.now { color:var(--ac); }
+.exp h4 { font-family:'Bricolage Grotesque'; font-weight:600; font-size:2cqw; letter-spacing:-.025em; margin:0 0 .4cqw; line-height:1.1; }
+.exp .co { font-size:1.15cqw; color:var(--mut); }
+.exp .co i { font-style:normal; color:var(--dim); }
+.exp p { font-size:1.15cqw; line-height:1.55; color:#b4b5bc; margin:0; }
+.exp .loc { font:500 .9cqw/1.4 'JetBrains Mono',monospace; color:var(--dim); text-align:right; }
+
+/* toolkit + edu */
+.kit { display:grid; grid-template-columns:repeat(5,1fr); gap:0; border-top:1px solid var(--line); }
+.kit div { padding:2.2cqw 1.6cqw 0 0; }
+.kit div + div { padding-left:1.6cqw; border-left:1px solid var(--line); }
+.kit h5 { font:500 .9cqw/1 'JetBrains Mono',monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--ac); margin:0 0 1.4cqw; }
+.kit ul { list-style:none; margin:0; padding:0; }
+.kit li { font-size:1.2cqw; line-height:2; color:#c4c5cc; }
+.edu { display:grid; grid-template-columns:1.2fr 1fr 1fr; gap:1.2cqw; margin-top:4cqw; }
+.edu > div { border:1px solid var(--line); border-radius:1.2cqw; padding:2.2cqw; }
+.edu small { font:500 .85cqw/1 'JetBrains Mono',monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); }
+.edu h4 { font-family:'Bricolage Grotesque'; font-weight:600; font-size:2cqw; letter-spacing:-.025em; margin:1.8cqw 0 .5cqw; line-height:1.1; }
+.edu p { font-size:1.1cqw; color:var(--mut); margin:0; }
+.edu .win h4::before { content:'★ '; color:var(--ac); }
+
+/* blog */
+.posts .po { display:grid; grid-template-columns: 1fr 3fr .4fr; gap:2cqw; padding:2.4cqw 0; border-top:1px solid var(--line); align-items:center; transition:padding .25s; }
+.posts .po:last-child { border-bottom:1px solid var(--line); }
+.posts .po:hover { padding-left:1.2cqw; }
+.posts .po:hover h4 { color:var(--ac); }
+.posts .meta { font:500 .95cqw/1.6 'JetBrains Mono',monospace; color:var(--dim); }
+.posts .meta b { color:var(--mut); font-weight:500; display:block; }
+.posts h4 { font-family:'Bricolage Grotesque'; font-weight:500; font-size:2.4cqw; letter-spacing:-.03em; line-height:1.15; margin:0; transition:color .25s; }
+.posts .ar { font-size:2cqw; text-align:right; }
+
+/* contact */
+.contact { margin:8cqw 4cqw 0; background:var(--ac); color:#0D0E12; border-radius:2cqw; padding:6cqw 5cqw; display:grid; grid-template-columns:1.6fr 1fr; gap:4cqw; align-items:end; position:relative; overflow:hidden; }
+.contact::after { content:''; position:absolute; right:-8cqw; top:-8cqw; width:30cqw; height:30cqw; border:1px solid #0D0E1233; border-radius:50%; box-shadow: 0 0 0 4cqw #0D0E120d, 0 0 0 8cqw #0D0E1208; }
+.contact .k { font:500 1cqw/1 'JetBrains Mono',monospace; letter-spacing:.12em; text-transform:uppercase; margin-bottom:2cqw; display:block; }
+.contact h2 { font-family:'Bricolage Grotesque'; font-weight:700; font-size:5.6cqw; letter-spacing:-.05em; line-height:.95; margin:0; }
+.contact .r { position:relative; z-index:1; }
+.contact .r p { font-size:1.3cqw; line-height:1.55; margin:0 0 2cqw; }
+.contact .r .b { display:inline-block; background:#0D0E12; color:var(--paper); padding:1.3cqw 2.2cqw; border-radius:99px; font-weight:600; font-size:1.25cqw; margin-right:1cqw; }
+.contact .r .m { font:500 1.05cqw/1 'JetBrains Mono',monospace; border-bottom:1px solid #0D0E12; padding-bottom:.3cqw; }
+
+/* footer */
+.foot { padding:5cqw 4cqw 2.4cqw; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:3cqw; font-size:1.15cqw; color:var(--mut); }
+.foot .big { font-family:'Bricolage Grotesque'; font-weight:800; font-size:3cqw; letter-spacing:-.05em; color:var(--ink); }
+.foot .big span { color:var(--ac); }
+.foot h6 { font:500 .9cqw/1 'JetBrains Mono',monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--dim); margin:0 0 1.2cqw; }
+.foot ul { list-style:none; padding:0; margin:0; line-height:2; color:#c4c5cc; }
+.foot .bot { grid-column:1/-1; display:flex; justify-content:space-between; border-top:1px solid var(--line); padding-top:2cqw; font:500 .95cqw/1 'JetBrains Mono',monospace; color:var(--dim); }
+</style>
+
+<h2>Your home page, top to bottom</h2>
+<p class="subtitle">Updated: in <b>Selected work</b>, hover over or click any of the five project cards and it takes over the big card. SHAX shows by default.</p>
+
+<div class="site">
+  <!-- NAV -->
+  <div class="nav"><span class="logo">fahad<span>.</span></span><span class="links"><b>Home</b><span>Services</span><span>Blog</span><span>Contact</span></span><span class="cta">Let's talk</span></div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div>
+      <div class="roles"><span><i></i>Security Researcher</span><span>AI Engineer</span><span>Full Stack Developer</span></div>
+      <h1 class="name"><span class="m">Muhammad</span>Fahad Murtaza</h1>
+      <p class="tag">An attacker's mindset with a builder's hands. I work across <em>offensive security</em>, AI and full-stack engineering.</p>
+      <div class="btns"><span class="p">Hire me →</span><span class="g">See my work</span></div>
+    </div>
+    <div class="pic">
+      <div class="card"><img src="/files/fahad.jpg" alt="Muhammad Fahad Murtaza"></div>
+      <div class="now"><small><i></i>CURRENTLY</small><b>AI Engineer, Pentest Automation</b><br><span>Nua Security · Riyadh (remote)</span></div>
+    </div>
+  </div>
+  <div class="strip"><span>Previously shipped at</span><span class="co"><span>Zigron</span><span>Triomatic</span><span>AirOverflow</span><span>OctalSol</span></span></div>
+
+  <!-- ABOUT -->
+  <div class="sec">
+    <div class="about">
+      <span class="kicker"><b>01</b>About</span>
+      <div class="txt">
+        <p>Six years of shipping production software, <em>now pointed at offense.</em></p>
+        <p>I started as a frontend developer in Lahore and spent five years building full-stack products: payments, healthcare data, real-time systems and the cloud underneath them. Along the way I finished a BS in Cyber Security and moved to the other side of the table.</p>
+        <p>Today I build autonomous agents that plan and run penetration tests on their own. I still write the APIs, the frontends and the infrastructure around them, which is why the agents actually ship.</p>
+        <div class="stats">
+          <div><b>6<sup>+</sup></b><span>years in production software</span></div>
+          <div><b>5</b><span>companies, two promotions</span></div>
+          <div><b>3</b><span>offensive security agents built</span></div>
+          <div><b>2</b><span>hackathon wins, 2023 and 2024</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <div class="sec">
+    <div class="sec-h"><span class="kicker"><b>02</b>Services</span><h2 class="h2">What I can do for you. <span>Each one has its own page.</span></h2></div>
+    <div class="svc">
+      <div class="s"><span class="n">01<i>↗</i></span><h3>AI pentest automation</h3><p>Autonomous agents that plan and run multi-step penetration tests: recon, enumeration and exploit chaining, with no operator in the loop.</p><div class="chips"><span>LangGraph</span><span>Python</span><span>Recon</span></div></div>
+      <div class="s"><span class="n">02<i>↗</i></span><h3>Web application penetration testing</h3><p>Black-box and white-box testing of your web app, with reproducible findings and fixes your team can ship.</p><div class="chips"><span>OWASP</span><span>Auth</span><span>APIs</span></div></div>
+      <div class="s"><span class="n">03<i>↗</i></span><h3>AI agent development</h3><p>LangGraph and LangChain agents built for production, with tool use, evaluation, and reasoning tied to evidence.</p><div class="chips"><span>LangChain</span><span>LangSmith</span><span>RAG</span></div></div>
+      <div class="s"><span class="n">04<i>↗</i></span><h3>Full-stack development</h3><p>Next.js, React, Django and Node.js products, from the first internal build to a public launch.</p><div class="chips"><span>Next.js</span><span>Django</span><span>WebSockets</span></div></div>
+      <div class="s"><span class="n">05<i>↗</i></span><h3>Cloud &amp; DevOps</h3><p>AWS and GCP on Docker and Kubernetes, with CI/CD that deploys on every merge.</p><div class="chips"><span>AWS</span><span>GCP</span><span>Kubernetes</span></div></div>
+      <div class="s all"><h3>Not sure which one you need?</h3><p>Tell me the problem. I'll tell you honestly whether I'm the right person for it.</p><span class="lk">Start a conversation →</span></div>
+    </div>
+  </div>
+
+  <!-- WORK -->
+  <div class="sec">
+    <div class="sec-h"><span class="kicker"><b>03</b>Selected work</span><h2 class="h2">Things I've built. <span>Some break software, some run businesses.</span></h2></div>
+    <div class="stage" id="stage">
+      <div class="feat on" data-p="shax">
+        <div class="l">
+          <span class="badge">AUTONOMOUS AGENT · NUA SECURITY</span>
+          <h3>SHAX</h3>
+          <p class="sub">An autonomous penetration testing agent.</p>
+          <ul>
+            <li>Plans and runs multi-step engagements with no operator in the loop</li>
+            <li>Adapts its attack path from live findings, not a fixed playbook</li>
+            <li>Modular tool layer, so new techniques drop in without touching orchestration</li>
+          </ul>
+          <div class="chips"><span>Python</span><span>LangGraph</span><span>LangChain</span><span>AWS</span><span>GCP</span><span>Kubernetes</span></div>
+        </div>
+        <div class="r">
+          <div class="h"><span>shax · engagement log</span><span>illustrative</span></div>
+          <div><span class="k">plan   </span> scope web app, authenticated</div>
+          <div><span class="k">recon  </span> 14 subdomains, 3 live apps</div>
+          <div><span class="k">enum   </span> /api/v2/users/{id} is sequential</div>
+          <div><span class="k">reason </span> evidence → test object access</div>
+          <div><span class="x">exploit</span> read another tenant's record</div>
+          <div><span class="ok">verify </span> reproduced 3 / 3</div>
+          <div><span class="k">report </span> broken object-level auth · high</div>
+        </div>
+      </div>
+      <div class="feat" data-p="argus">
+        <div class="l">
+          <span class="badge">SECURITY AGENT</span>
+          <h3>Argus</h3>
+          <p class="sub">A web penetration testing agent with two modes.</p>
+          <ul>
+            <li>Assesses web applications with and without access to their source code</li>
+            <li>Black-box: tests from the outside, the way a real attacker would</li>
+            <li>White-box: uses the source code to decide where to look</li>
+          </ul>
+          <div class="chips"><span>Black-box</span><span>White-box</span><span>Web security</span><span>AI agents</span></div>
+        </div>
+        <div class="r">
+          <div class="h"><span>argus · two ways in</span><span>illustrative</span></div>
+          <div><span class="k">black-box</span> no source, outside view</div>
+          <div><span class="k">         </span> map pages, inputs and auth</div>
+          <div><span class="x">         </span> probe like an attacker</div>
+          <div><span class="k">white-box</span> source available</div>
+          <div><span class="k">         </span> follow input through the code</div>
+          <div><span class="x">         </span> test the risky paths live</div>
+          <div><span class="ok">report   </span> findings with evidence</div>
+        </div>
+      </div>
+      <div class="feat" data-p="scrh">
+        <div class="l">
+          <span class="badge">CODE REVIEW · LLM</span>
+          <h3>SCRH</h3>
+          <p class="sub">A self-learning code review harness.</p>
+          <ul>
+            <li>Reviews source code with static analysis and an LLM</li>
+            <li>Refines its own review criteria from the outcomes of earlier passes</li>
+            <li>Gets sharper with every pass instead of repeating the same mistakes</li>
+          </ul>
+          <div class="chips"><span>Static analysis</span><span>LLM</span><span>Python</span></div>
+        </div>
+        <div class="r">
+          <div class="h"><span>scrh · review loop</span><span>illustrative</span></div>
+          <div><span class="k">pass 1 </span> review against current criteria</div>
+          <div><span class="k">score  </span> compare findings with outcomes</div>
+          <div><span class="x">learn  </span> drop rules that misfire</div>
+          <div><span class="x">       </span> sharpen the ones that hit</div>
+          <div><span class="k">pass 2 </span> review again, refined</div>
+          <div><span class="ok">repeat </span> each pass beats the last</div>
+        </div>
+      </div>
+      <div class="feat" data-p="dentasmart">
+        <div class="l">
+          <span class="badge">HEALTH SAAS · ZIGRON</span>
+          <h3>DentaSmart</h3>
+          <p class="sub">A dental-health SaaS, from internal build to public launch.</p>
+          <ul>
+            <li>Real-time medical image ingestion, retrieval and clinician review</li>
+            <li>An AI second opinion that turns model output into patient-readable guidance</li>
+            <li>Secure pipelines for patient health records under privacy rules</li>
+          </ul>
+          <div class="chips"><span>REST APIs</span><span>WebSockets</span><span>AI</span><span>Healthcare</span></div>
+        </div>
+        <div class="r">
+          <div class="h"><span>dentasmart · scan to guidance</span><span>flow</span></div>
+          <div><span class="k">upload </span> dental image from the clinic</div>
+          <div><span class="k">ingest </span> real-time API, stored securely</div>
+          <div><span class="k">analyze</span> clinical model runs</div>
+          <div><span class="k">review </span> clinician checks the result</div>
+          <div><span class="ok">explain</span> second opinion in plain words</div>
+        </div>
+      </div>
+      <div class="feat" data-p="jukebox">
+        <div class="l">
+          <span class="badge">EVENTS SAAS · TRIOMATIC</span>
+          <h3>JukeBox</h3>
+          <p class="sub">Concert and venue management, driven by AI.</p>
+          <ul>
+            <li>Recommendations from audience demographics, location and listening preferences</li>
+            <li>Coordinates stage, lighting, sound and scheduling across concurrent events</li>
+            <li>Built in Django, Next.js and TypeScript on AWS and GCP</li>
+          </ul>
+          <div class="chips"><span>Django</span><span>Next.js</span><span>TypeScript</span><span>AWS</span><span>GCP</span></div>
+        </div>
+        <div class="r">
+          <div class="h"><span>jukebox · plan a night</span><span>flow</span></div>
+          <div><span class="k">audience </span> demographics and location</div>
+          <div><span class="k">taste    </span> listening preferences</div>
+          <div><span class="x">recommend</span> setlist and event plan</div>
+          <div><span class="k">venues   </span> stage, lighting, sound, time</div>
+          <div><span class="ok">sync     </span> across concurrent events</div>
+        </div>
+      </div>
+    </div>
+    <div class="proj" id="proj">
+      <div class="p on" data-p="shax"><small>Agent · Nua<i>● viewing</i></small><h4>SHAX</h4><p>Autonomous pentest agent with no operator in the loop.</p></div>
+      <div class="p" data-p="argus"><small>Security agent<i>● viewing</i></small><h4>Argus</h4><p>Web pentest agent, black-box and white-box.</p></div>
+      <div class="p" data-p="scrh"><small>Security · LLM<i>● viewing</i></small><h4>SCRH</h4><p>Code review harness that learns from each pass.</p></div>
+      <div class="p" data-p="dentasmart"><small>Health · Zigron<i>● viewing</i></small><h4>DentaSmart</h4><p>Dental SaaS with an AI second opinion.</p></div>
+      <div class="p" data-p="jukebox"><small>Events · Triomatic<i>● viewing</i></small><h4>JukeBox</h4><p>AI concert and venue management.</p></div>
+    </div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="sec">
+    <div class="sec-h"><span class="kicker"><b>04</b>Experience</span><h2 class="h2">Where I've worked. <span>Five teams, two promotions.</span></h2></div>
+    <div class="exp">
+      <div class="r"><span class="d now">MAY 2025 — NOW</span><div><h4>AI Engineer, Pentest Automation</h4><span class="co">Nua Security</span></div><p>Architected SHAX, an autonomous pentest agent, and deployed it across AWS and GCP.</p><span class="loc">Riyadh, SA</span></div>
+      <div class="r"><span class="d">JAN 2024 — JUN 2025</span><div><h4>Full Stack Developer</h4><span class="co">Zigron <i>· promoted from Backend</i></span></div><p>Took DentaSmart from an internal build to a public consumer launch.</p><span class="loc">Islamabad, PK</span></div>
+      <div class="r"><span class="d">OCT 2022 — NOV 2023</span><div><h4>Full Stack Developer</h4><span class="co">Triomatic Solutions</span></div><p>Led JukeBox in Django, Next.js and TypeScript on AWS and GCP.</p><span class="loc">Rawalpindi, PK</span></div>
+      <div class="r"><span class="d">APR 2022 — SEP 2022</span><div><h4>Full Stack Developer</h4><span class="co">AirOverflow</span></div><p>Built OAuth 2.0 and JWT auth aligned with GDPR and PCI-DSS.</p><span class="loc">Islamabad, PK</span></div>
+      <div class="r"><span class="d">OCT 2020 — FEB 2022</span><div><h4>Full Stack Developer</h4><span class="co">OctalSol <i>· promoted from Frontend</i></span></div><p>React and TypeScript interfaces for high-traffic consumer apps.</p><span class="loc">Lahore, PK</span></div>
+    </div>
+  </div>
+
+  <!-- TOOLKIT + EDU -->
+  <div class="sec">
+    <div class="sec-h"><span class="kicker"><b>05</b>Toolkit</span><h2 class="h2">What I work with.</h2></div>
+    <div class="kit">
+      <div><h5>Security</h5><ul><li>Reconnaissance</li><li>Enumeration</li><li>Web app security</li><li>Vuln assessment</li></ul></div>
+      <div><h5>AI &amp; LLM</h5><ul><li>LangChain</li><li>LangGraph</li><li>LangSmith</li><li>Agent systems</li></ul></div>
+      <div><h5>Backend</h5><ul><li>Python · Django</li><li>Node.js</li><li>REST · WebSockets</li><li>Microservices</li></ul></div>
+      <div><h5>Frontend</h5><ul><li>React</li><li>Next.js</li><li>TypeScript</li></ul></div>
+      <div><h5>DevOps</h5><ul><li>Docker · Kubernetes</li><li>AWS · GCP</li><li>CI/CD</li><li>Linux · Git</li></ul></div>
+    </div>
+    <div class="edu">
+      <div><small>Education</small><h4>BS Cyber Security</h4><p>Air University, Islamabad · 2020 – 2024</p></div>
+      <div class="win"><small>Award · 2024</small><h4>Winner, Airtech Codecamp</h4><p>Air University, Islamabad</p></div>
+      <div class="win"><small>Award · 2023</small><h4>Winner, Hack N' Connect</h4><p>Netronix, GIK Institute</p></div>
+    </div>
+  </div>
+
+  <!-- BLOG -->
+  <div class="sec">
+    <div class="sec-h"><span class="kicker"><b>06</b>Writing</span><h2 class="h2">Notes from the field. <span>What I learn breaking and building.</span></h2></div>
+    <div class="posts">
+      <div class="po"><span class="meta"><b>AI SECURITY</b>Nov 2026 · 8 min</span><h4>Why an autonomous pentest agent needs evidence, not a playbook</h4><span class="ar">↗</span></div>
+      <div class="po"><span class="meta"><b>WEB SECURITY</b>Oct 2026 · 6 min</span><h4>Finding broken object-level authorization before your users do</h4><span class="ar">↗</span></div>
+      <div class="po"><span class="meta"><b>CAREER</b>Sep 2026 · 5 min</span><h4>From full-stack developer to offensive security in six years</h4><span class="ar">↗</span></div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="contact">
+    <div><span class="k">Open to remote roles &amp; projects</span><h2>Got something that needs breaking, or building?</h2></div>
+    <div class="r"><p>Tell me what you're working on. I reply within a day, from Islamabad (UTC+5).</p><span class="b">Let's talk →</span><span class="m">fahadmurtaza021@gmail.com</span></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <div><div class="big">fahad<span>.</span></div><p style="margin:.8cqw 0 0;max-width:26cqw;line-height:1.55">Security researcher, AI engineer and full-stack developer, based in Islamabad.</p></div>
+    <div><h6>Pages</h6><ul><li>Home</li><li>Services</li><li>Blog</li><li>Contact</li></ul></div>
+    <div><h6>Services</h6><ul><li>Pentest automation</li><li>Web app pentesting</li><li>AI agents</li><li>Full stack</li></ul></div>
+    <div><h6>Elsewhere</h6><ul><li>GitHub ↗</li><li>LinkedIn ↗</li><li>Email ↗</li></ul></div>
+    <div class="bot"><span>© 2026 Muhammad Fahad Murtaza</span><span>Built by hand in Islamabad</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const cards = document.querySelectorAll('#proj .p'), panels = document.querySelectorAll('#stage .feat');
+  function go(key){
+    cards.forEach(c => c.classList.toggle('on', c.dataset.p === key));
+    panels.forEach(f => f.classList.toggle('on', f.dataset.p === key));
+  }
+  cards.forEach(c => { c.addEventListener('mouseenter', () => go(c.dataset.p)); c.addEventListener('click', () => go(c.dataset.p)); });
+})();
+</script>

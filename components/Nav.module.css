@@ -1,0 +1,159 @@
+.header {
+  position: relative;
+  z-index: 50;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 84px;
+}
+
+.logo {
+  font-family: var(--f-display), sans-serif;
+  font-weight: 800;
+  font-size: 1.55rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.logo span {
+  color: var(--ac);
+}
+
+.links {
+  display: flex;
+  gap: clamp(20px, 3vw, 40px);
+  font-size: 0.95rem;
+  color: var(--mut);
+}
+
+.links a {
+  position: relative;
+  padding: 6px 0;
+  transition: color 0.2s;
+}
+
+.links a:hover,
+.links a[aria-current='page'] {
+  color: var(--ink);
+}
+
+.links a[aria-current='page']::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6px;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--ac);
+}
+
+.cta {
+  padding: 12px 20px;
+  font-size: 0.92rem;
+}
+
+.menuBtn {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.menuBtn i {
+  position: relative;
+  width: 14px;
+  height: 8px;
+  border-top: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transition: transform 0.25s var(--ease);
+}
+
+.menuBtn i[data-open='true'] {
+  border-bottom-color: transparent;
+  transform: translateY(3px);
+}
+
+.panel {
+  position: fixed;
+  inset: 84px 0 0 0;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  overflow-y: auto;
+}
+
+.panel nav {
+  display: flex;
+  flex-direction: column;
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+.panel nav a {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--f-display), sans-serif;
+  font-weight: 600;
+  font-size: 2.2rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.panel nav a span {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--dim-text);
+  font-weight: 500;
+}
+
+.panel nav a[aria-current='page'] {
+  color: var(--ac);
+}
+
+.panel nav a.mail {
+  margin-top: 28px;
+  border: 0;
+  font-family: var(--f-mono), monospace;
+  font-size: 0.9rem;
+  letter-spacing: 0;
+  color: var(--mut);
+}
+
+@media (max-width: 760px) {
+  .links,
+  .cta {
+    display: none;
+  }
+
+  .menuBtn {
+    display: inline-flex;
+  }
+
+  .bar {
+    height: 72px;
+  }
+
+  .panel {
+    inset: 72px 0 0 0;
+  }
+}
+
+@media (min-width: 761px) {
+  .panel {
+    display: none;
+  }
+}
