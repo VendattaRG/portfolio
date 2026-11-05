@@ -26,7 +26,10 @@ export default function BlogPage() {
           code, and written for people who build things.
         </p>
       </header>
-      <section className="wrap" aria-label="All posts">
+      <section className="wrap" aria-labelledby="all-posts">
+        <h2 id="all-posts" className="sr-only">
+          All posts
+        </h2>
         <PostList posts={posts} withDescription />
       </section>
     </>
