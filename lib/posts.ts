@@ -23,6 +23,10 @@ function read(dir: string, file: string): Post {
   // gray-matter turns unquoted dates into Date objects; normalise both forms.
   const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : String(data.date)
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`${file}: date must be YYYY-MM-DD, got "${date}"`)
+  // the shape is right; make sure it's a real day (no month 13, no Feb 30)
+  const real = new Date(`${date}T00:00:00Z`)
+  if (Number.isNaN(real.getTime()) || real.toISOString().slice(0, 10) !== date)
+    throw new Error(`${file}: date "${date}" is not a real calendar day`)
   const words = content.split(/\s+/).filter(Boolean).length
   return {
     slug: file.replace(/\.mdx$/, ''),

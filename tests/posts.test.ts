@@ -32,6 +32,10 @@ describe('posts', () => {
     expect(() => getAllPosts('tests/fixtures/baddate')).toThrow(/when\.mdx.*date/)
   })
 
+  it('rejects a well-formed but impossible date like 2026-13-45', () => {
+    expect(() => getAllPosts('tests/fixtures/impossible')).toThrow(/nodate\.mdx.*date/)
+  })
+
   it('returns undefined for an unknown slug', () => {
     expect(getPost('missing', FIX)).toBeUndefined()
   })
