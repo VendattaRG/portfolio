@@ -31,6 +31,11 @@
   pointer-events: none;
 }
 
+/* the site-wide coral focus ring would vanish on the coral box */
+.box :focus-visible {
+  outline-color: var(--ac-ink);
+}
+
 .k {
   display: block;
   font-family: var(--f-mono), monospace;
