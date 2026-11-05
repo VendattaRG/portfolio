@@ -1,0 +1,59 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import matter from 'gray-matter'
+
+export type Post = {
+  slug: string
+  title: string
+  description: string
+  date: string // YYYY-MM-DD
+  tags: string[]
+  draft: boolean
+  minutes: number
+  body: string
+}
+
+const DIR = 'content/blog'
+
+function read(dir: string, file: string): Post {
+  const { data, content } = matter(fs.readFileSync(path.join(dir, file), 'utf8'))
+  for (const field of ['title', 'description', 'date'] as const) {
+    if (!data[field]) throw new Error(`${file}: missing ${field}`)
+  }
+  // gray-matter turns unquoted dates into Date objects; normalise both forms.
+  const date = data.date instanceof Date ? data.date.toISOString().slice(0, 10) : String(data.date)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`${file}: date must be YYYY-MM-DD, got "${date}"`)
+  const words = content.split(/\s+/).filter(Boolean).length
+  return {
+    slug: file.replace(/\.mdx$/, ''),
+    title: String(data.title),
+    description: String(data.description),
+    date,
+    tags: Array.isArray(data.tags) ? data.tags.map(String) : [],
+    draft: data.draft === true,
+    minutes: Math.max(1, Math.round(words / 220)),
+    body: content,
+  }
+}
+
+export function getAllPosts(dir = DIR): Post[] {
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith('.mdx'))
+    .map((f) => read(dir, f))
+    .filter((p) => !p.draft)
+    .sort((a, b) => b.date.localeCompare(a.date))
+}
+
+export function getPost(slug: string, dir = DIR): Post | undefined {
+  return getAllPosts(dir).find((p) => p.slug === slug)
+}
+
+export function formatDate(date: string): string {
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  })
+}
