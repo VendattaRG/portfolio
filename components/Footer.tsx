@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { NAV, SITE } from '@/lib/site'
+import { SERVICES } from '@/lib/services'
 import s from './Footer.module.css'
 
 export default function Footer() {
@@ -17,6 +18,16 @@ export default function Footer() {
           {NAV.map((n) => (
             <li key={n.href}>
               <Link href={n.href}>{n.label}</Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2 className={s.h}>Services</h2>
+        <ul>
+          {SERVICES.map((sv) => (
+            <li key={sv.slug}>
+              <Link href={`/services/${sv.slug}`}>{sv.title}</Link>
             </li>
           ))}
         </ul>

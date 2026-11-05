@@ -1,6 +1,6 @@
 .foot {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-columns: 1.6fr 0.8fr 1.3fr 0.9fr;
   gap: 32px;
   padding-top: clamp(56px, 7vw, 88px);
   padding-bottom: 28px;
