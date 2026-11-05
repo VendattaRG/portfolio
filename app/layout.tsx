@@ -4,6 +4,7 @@ import { Bricolage_Grotesque, Figtree, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Reveal from '@/components/Reveal'
 import { SITE } from '@/lib/site'
 
 const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--f-display', axes: ['opsz'], display: 'swap' })
@@ -36,6 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Nav />
         <main id="main">{children}</main>
         <Footer />
+        <Reveal />
       </body>
     </html>
   )
