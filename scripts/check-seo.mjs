@@ -104,3 +104,4 @@ if (failures.length) {
   process.exit(1)
 }
 console.log(`OK ${urls.length} pages`)
+process.exit(0) // keep-alive connections to a remote host would otherwise hold the process open
