@@ -27,7 +27,22 @@ export default function Reveal() {
       { rootMargin: '0px 0px -8% 0px' },
     )
     els.forEach((el) => io.observe(el))
-    return () => io.disconnect()
+
+    // content rendered later (e.g. posts coming back after a blog filter is cleared) must be watched too
+    const mo = new MutationObserver((muts) => {
+      for (const m of muts)
+        for (const n of m.addedNodes) {
+          if (!(n instanceof Element)) continue
+          if (n.matches('.reveal:not(.in)')) io.observe(n)
+          n.querySelectorAll('.reveal:not(.in)').forEach((el) => io.observe(el))
+        }
+    })
+    mo.observe(document.body, { childList: true, subtree: true })
+
+    return () => {
+      io.disconnect()
+      mo.disconnect()
+    }
   }, [path])
 
   return null
