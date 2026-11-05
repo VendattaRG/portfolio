@@ -58,7 +58,13 @@ export default function Nav() {
       <div id="mobile-menu" className={s.panel} data-open={open} hidden={!open}>
         <nav aria-label="Mobile" className="wrap">
           {NAV.map((n, i) => (
-            <Link key={n.href} href={n.href} aria-current={isActive(path, n.href) ? 'page' : undefined}>
+            // close on tap too: tapping the current page doesn't change the route
+            <Link
+              key={n.href}
+              href={n.href}
+              aria-current={isActive(path, n.href) ? 'page' : undefined}
+              onClick={() => setOpen(false)}
+            >
               <span className="mono">0{i + 1}</span>
               {n.label}
             </Link>
