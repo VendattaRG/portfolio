@@ -53,6 +53,15 @@ describe('real content', () => {
     expect(getAllPosts().length).toBeGreaterThanOrEqual(3)
   })
 
+  // posts are also written unattended (scripts/auto-blog.mjs), so the build gate checks what SEO needs
+  it.each(getAllPosts().map((p) => [p.slug, p] as const))('%s has a search-sized description and known tags', async (_slug, p) => {
+    const { tagLabel } = await import('@/lib/blog')
+    expect(p.description.length).toBeGreaterThanOrEqual(50)
+    expect(p.description.length).toBeLessThanOrEqual(160)
+    expect(p.tags.length).toBeGreaterThan(0)
+    for (const t of p.tags) expect(tagLabel(t), t).not.toBe(t)
+  })
+
   it('gives every service page at least one related post', async () => {
     const { SERVICES } = await import('@/lib/services')
     const tags = new Set(getAllPosts().flatMap((p) => p.tags))
