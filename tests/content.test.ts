@@ -31,10 +31,11 @@ describe('services', () => {
 })
 
 describe('cv data', () => {
-  it('lists the five roles, newest first and current role marked', () => {
-    expect(EXPERIENCE).toHaveLength(5)
-    expect(EXPERIENCE[0].current).toBe(true)
+  it('lists the roles newest first, with only the current one marked', () => {
+    expect(EXPERIENCE).toHaveLength(6)
+    expect(EXPERIENCE[0]).toMatchObject({ company: 'Parameter', role: 'AI Security Engineer', current: true })
     expect(EXPERIENCE.filter((e) => e.current)).toHaveLength(1)
+    expect(EXPERIENCE[1]).toMatchObject({ company: 'Nua Security', to: 'Jul 2026' })
   })
 
   it('lists the five projects in showcase order', () => {

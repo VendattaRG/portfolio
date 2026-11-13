@@ -1,4 +1,4 @@
-// Every fact here comes from the CV. Keep it that way.
+// Every fact here comes from the CV or from Fahad directly. Keep it that way.
 
 export type PanelLine = { k: string; text: string; tone?: 'hit' | 'ok' }
 
@@ -152,13 +152,21 @@ export type Role = {
 
 export const EXPERIENCE: Role[] = [
   {
-    from: 'May 2025',
+    from: 'Nov 2026',
     to: 'Now',
+    role: 'AI Security Engineer',
+    company: 'Parameter',
+    summary: 'Building AI pentest automation and automated security code review.',
+    location: 'California, US',
+    current: true,
+  },
+  {
+    from: 'May 2025',
+    to: 'Jul 2026',
     role: 'AI Engineer, Pentest Automation',
     company: 'Nua Security',
     summary: 'Architected SHAX, an autonomous pentest agent, and deployed it across AWS and GCP.',
     location: 'Riyadh, SA',
-    current: true,
   },
   {
     from: 'Jan 2024',
@@ -196,7 +204,7 @@ export const EXPERIENCE: Role[] = [
   },
 ]
 
-export const COMPANIES = ['Zigron', 'Triomatic', 'AirOverflow', 'OctalSol']
+export const COMPANIES = ['Nua Security', 'Zigron', 'Triomatic', 'AirOverflow', 'OctalSol']
 
 export const SKILLS = [
   { group: 'Security', items: ['Reconnaissance', 'Enumeration', 'Web app security', 'Vuln assessment'] },
@@ -215,7 +223,7 @@ export const AWARDS = [
 
 export const STATS = [
   { value: '6', sup: '+', label: 'years in production software' },
-  { value: '5', label: 'companies, two promotions' },
+  { value: '6', label: 'companies, two promotions' },
   { value: '3', label: 'offensive security agents built' },
   { value: '2', label: 'hackathon wins, 2023 and 2024' },
 ]
