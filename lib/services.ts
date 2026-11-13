@@ -27,7 +27,7 @@ export const SERVICES: Service[] = [
     metaDescription:
       'I build autonomous AI agents that plan and run multi-step penetration tests: recon, enumeration and exploit chaining, with evidence-backed findings.',
     intro:
-      "I design and build LLM agents that run penetration tests on their own. They plan an engagement, carry out recon and enumeration, chain exploits, and change their attack path based on what they find instead of following a fixed playbook. It's what I do full-time at Nua Security, where I architected SHAX.",
+      "I design and build LLM agents that run penetration tests on their own. They plan an engagement, carry out recon and enumeration, chain exploits, and change their attack path based on what they find instead of following a fixed playbook. It's what I do full-time at Parameter, and before that at Nua Security, where I architected SHAX.",
     deliverables: [
       'An agent that plans and runs multi-step engagements against your targets, inside a scope you define',
       'Recon, enumeration and exploitation built as modular tools, so new techniques plug in without rewriting the agent',
@@ -125,7 +125,7 @@ export const SERVICES: Service[] = [
     metaDescription:
       'Production AI agents built with LangGraph and LangChain: tool use, evaluation and tracing with LangSmith, and reasoning grounded in evidence.',
     intro:
-      "I build LLM agents that do real work in production, not demos. My day job is an autonomous agent that runs penetration tests end to end, so I design for the hard parts: multi-step planning, tool use, staying grounded in evidence, and noticing when it's wrong.",
+      "I build LLM agents that do real work in production, not demos. My day job is building agents that run penetration tests and automate security code review end to end, so I design for the hard parts: multi-step planning, tool use, staying grounded in evidence, and noticing when it's wrong.",
     deliverables: [
       'Agent design in LangGraph: its state, its planning loop and the tools it can call',
       'Tool integrations with your APIs, databases and internal services',
@@ -202,7 +202,7 @@ export const SERVICES: Service[] = [
       },
       {
         q: 'Do you work remotely?',
-        a: "Yes. I'm in Islamabad (UTC+5) and work remotely, currently with a team in Riyadh.",
+        a: "Yes. I'm in Islamabad (UTC+5) and work remotely, currently with a team in California.",
       },
     ],
   },

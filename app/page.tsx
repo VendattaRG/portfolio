@@ -70,7 +70,7 @@ export default function Home() {
             </small>
             <b>{now.role}</b>
             <span>
-              {now.company} · {now.location.replace(', SA', '')} (remote)
+              {now.company} · {now.location.split(',')[0]} (remote)
             </span>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function Home() {
               Security and moved to the other side of the table.
             </p>
             <p className="reveal">
-              Today I build autonomous agents that plan and run penetration tests on their own. I still write the APIs,
+              Today I build autonomous agents that run penetration tests and review code for security bugs on their own. I still write the APIs,
               the frontends and the infrastructure around them, which is why the agents actually ship.
             </p>
             <dl className={`${s.stats} reveal`}>
@@ -172,7 +172,7 @@ export default function Home() {
 
       {/* EXPERIENCE */}
       <section id="experience" className={`wrap ${s.sec}`} aria-labelledby="exp-h">
-        <SectionHead id="exp-h" n="04" label="Experience" title="Where I've worked." muted="Five teams, two promotions." />
+        <SectionHead id="exp-h" n="04" label="Experience" title="Where I've worked." muted="Six teams, two promotions." />
         <ol className={s.exp}>
           {EXPERIENCE.map((e) => (
             <li key={e.from} className="reveal">
