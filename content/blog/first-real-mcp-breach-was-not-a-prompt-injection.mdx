@@ -1,0 +1,102 @@
+---
+title: 'The first real MCP breach was not a prompt injection'
+description: 'A German web host was breached through its own MCP server. The lesson is not about prompt injection: an MCP endpoint is a production API.'
+date: '2026-11-15'
+tags: ['ai-security', 'agents', 'appsec']
+draft: false
+---
+
+Almost everything written about Model Context Protocol security is about prompt injection. Poisoned tool descriptions, instructions hidden in a web page, an agent talked into exfiltrating a secret. All real, all worth defending against. Then a company actually got breached through an MCP server, and it was none of those things.
+
+Over the past two weeks the German hosting provider mittwald has been publishing updates about an intrusion whose entry point was the MCP server it offered customers for connecting AI assistants to its mStudio hosting platform. In their [own FAQ](https://www.mittwald.de/lp/mcp-faq) the sentence is as plain as it gets: "Die Lücke lag in unserem MCP-Server" — the gap was in our MCP server (my translation; their pages are in German).
+
+No model was tricked. A server was vulnerable.
+
+## What they have said happened
+
+The timeline comes from mittwald's [incident write-up](https://www.mittwald.de/blog/mittwald/sicherheitsvorfall-am-mcp-server) of 7 November and their [status page](https://www.mittwald-status.de/incidents/255116):
+
+- **21 October:** the attacker first tests a vulnerability in the MCP server.
+- **23 October:** they behave like an ordinary user, register test accounts, use extensions, and make what mittwald calls simple injection attempts.
+- **27 October, 14:58:** another account is registered. At 15:03 the gap is exploited.
+- **4 November:** unusual behaviour is noticed in the morning, the first attacker account is blocked at 11:11, and the MCP server is identified as the entry point and shut down.
+- **5 November:** affected projects are locked, mStudio logins and SSH are disabled, authorities are informed.
+- **6 November:** mittwald says it forensically analysed "56 kompromittierte Projekte" — 56 compromised projects — plus the MCP server itself. That figure is theirs.
+- **7 November:** mStudio and SSH come back.
+- **Night of 12 November:** attacks resume. SSH, mStudio and the customer centre go down again and the corporate website is taken offline. [heise](https://www.heise.de/news/Angriff-ueber-MCP-Server-Webhoster-Mittwald-im-Krisenmodus-11522728.html) reported a source calling the website defaced; mittwald disputed that in an addendum to the same article.
+- **13 November:** services restored, with no third-party access remaining. The MCP server stays off "bis auf Weiteres" — until further notice.
+
+What was taken, per the FAQ: session tokens, not passwords. And this is the line I would put on a slide: "Das Token erlaubte Zugriff auf dein mStudio mit deinen Rechten" — the token allowed access to your mStudio with your rights.
+
+The vulnerability class has still not been published. A postmortem is promised. So I am not going to guess at the bug, because the interesting part does not depend on it.
+
+## Why the shape of this matters
+
+Strip out the letters M, C and P and you have a boring incident: an internet-facing API had a flaw, an attacker registered accounts to reach it, and credentials for other users leaked out. We have known how to defend that for twenty years.
+
+That is exactly the point. The MCP server was treated like an integration surface and it behaved like a production API with a very wide reach. Three things make that combination worse than usual:
+
+**The tokens are maximally scoped.** An MCP server exists so an assistant can do what you can do. The credential behind it therefore tends to carry your full rights, not a narrow slice. One leaked session token equals one fully compromised tenant, and 56 of them equal a very bad week.
+
+**It is new code on an old blast radius.** MCP servers get written quickly, by whoever wanted the integration, and then wired into the system of record. The code is a few months old; what it can reach is the whole platform.
+
+**It is nobody's API.** Platform teams own the main API and its authentication. The MCP endpoint often sits beside it, with its own session handling, written by a team that was shipping a feature, not an authorization boundary.
+
+## What the spec already tells you to do
+
+The protocol is not silent here. The current revision is [2026-07-28](https://modelcontextprotocol.io/specification/versioning), and the [Streamable HTTP transport](https://modelcontextprotocol.io/specification/2026-07-28/basic/transports/streamable-http) carries hard requirements that are routinely skipped:
+
+- "Servers **MUST** validate the `Origin` header on all incoming connections to prevent DNS rebinding attacks."
+- "If the `Origin` header is present and invalid, servers **MUST** respond with HTTP 403 Forbidden."
+- "When running locally, servers **SHOULD** bind only to localhost (127.0.0.1) rather than all network interfaces (0.0.0.0)."
+- "Servers **SHOULD** implement proper authentication for all connections."
+
+The [security best practices](https://modelcontextprotocol.io/specification/2026-07-28/basic/security_best_practices) page is blunt about credentials: "MCP servers that implement authorization **MUST** verify all inbound requests. MCP servers **MUST NOT** treat possession of a state handle as authentication." The same page notes MCP is now stateless and "has no protocol-level sessions" at all.
+
+The Cloud Security Alliance also published a [research note on 9 November](https://labs.cloudsecurityalliance.org/research/csa-research-note-mcp-transport-trust-gap-20261109-csa-style/) on what it calls the transport trust gap: stdio "inherits the operating system's process boundary as its trust boundary", while HTTP "has no such inherited boundary". It names current fixed SDK versions — `@modelcontextprotocol/sdk` 1.32.0, `mcp` 1.30.0 or 2.2.0, `go-sdk` 1.4.1 — and says localhost HTTP servers should confirm the three transport rules above "or should be migrated to stdio where its use case permits."
+
+## Checks I would run on my own MCP server today
+
+Start with the Origin rule, because it is one request and the spec gives you the expected answer:
+
+```bash
+# Anything other than 403 here is a finding.
+curl -s -o /dev/null -w '%{http_code}\n' \
+  -X POST http://127.0.0.1:3000/mcp \
+  -H 'Origin: https://not-your-app.example' \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}'
+```
+
+Then the listener, because "local only" is often a comment rather than a bind address:
+
+```bash
+# 0.0.0.0 on an MCP port means it is not local.
+ss -ltnp | grep -E 'mcp|3000|8080'
+```
+
+Then token scope, which is the one that decides your blast radius. Take a token your MCP server issued and try it somewhere it should not work:
+
+```bash
+# If your main API accepts an MCP token, the MCP server is not its own audience.
+curl -si https://api.your-app.example/v1/me \
+  -H "Authorization: Bearer $MCP_TOKEN" | head -1
+```
+
+After that, four things that are design work rather than tests:
+
+1. **Give the MCP server its own audience and its own tokens**, short-lived, and reject anything not minted for it.
+2. **Scope down from the user's rights.** An assistant that reads and deploys does not need to add SSH users. Ask what the worst tool in the set can do, because that is what a stolen token can do.
+3. **Log and alert on it like an API, not a feature.** mittwald found this by noticing unusual behaviour, which is the right way, but on 4 November rather than 21 October.
+4. **Put self-registration behind something.** The attacker registered ordinary accounts to reach the endpoint.
+
+And have a kill switch. The one unambiguously good thing here is that the server could be turned off in an afternoon, with a documented CLI alternative for customers.
+
+## The part I would not over-read
+
+mittwald attributes the attack to AI tooling, and the evidence they give is timing: "Teilweise vergehen nur Sekunden zwischen Schritten" — sometimes only seconds pass between steps (my translation). Their status page goes further and calls the attackers professionals using automated AI systems. I would hold that loosely: fast steps are also what a script looks like, and heise notes the claim rests on log timing with no other published evidence.
+
+It does not change what you do on Monday either. A vulnerable endpoint was found and exploited six days after first contact. Whether a model or a loop did the finding, the fix is what it has always been: treat the thing you exposed as exposed.
+
+If you want someone to go over an MCP surface like this with you, [get in touch](/contact).
