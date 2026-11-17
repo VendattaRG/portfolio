@@ -1,0 +1,119 @@
+---
+title: 'GPUStack and the bug of trusting localhost: what to check'
+description: 'CVE-2026-102895 gave unauthenticated admin on GPUStack and is now on the CISA KEV list. Why trusting the request source fails, and how to test for it.'
+date: '2026-11-18'
+tags: ['ai-security', 'web-security', 'appsec']
+draft: false
+---
+
+Some authentication bugs are clever. This one is a single sentence of design: "requests from localhost are trusted, so they do not need to log in."
+
+That sentence is the root of CVE-2026-102895 in GPUStack, a platform for running and serving AI models across GPU hosts. The [GitHub advisory](https://github.com/gpustack/gpustack/security/advisories/GHSA-gj9m-f8ph-pmhr) rates it Critical, CVSS 9.8, and says it "has been observed exploited in the wild". CISA's [Known Exploited Vulnerabilities catalog](https://www.cisa.gov/known-exploited-vulnerabilities-catalog) lists it, and a [secondary summary](https://tech-insider.org/cisa-kev-gpustack-freeswitch-openssh-aspera-faspex-nov-12-deadline-2026/) puts the addition at 9 November, with a 12 November federal deadline.
+
+I am writing about it because the mistake is not specific to GPUStack. I'd expect to find it in plenty of internal tools, and AI infrastructure is currently full of fast-moving internal tools.
+
+## What the advisory says
+
+The advisory was published on 31 July 2026 and affects `gpustack` versions below 2.2.0. The fix is 2.2.0.
+
+The vulnerable code path, `get_current_user` in `gpustack/api/auth.py`, promotes any request whose source is considered loopback to the built-in administrator account. That happens when `force_auth_localhost` is `False`, which is the default. There are two ways to look like loopback:
+
+- **A reverse proxy on the same host.** With a typical `proxy_pass http://127.0.0.1:<port>` setup, "every remote request arrives at GPUStack with TCP peer `127.0.0.1`", so the auto-admin branch fires. No header and no credential needed.
+- **A client-controlled header.** A forged `X-GPUStack-Real-IP` header can make the request appear to come from loopback.
+
+The advisory names the root cause plainly: "Trusting the network source of a request (socket peer, or a client-controllable header) as an authentication signal."
+
+The impact is full administrator access with no login. That covers users, models, workers and configuration, plus worker credentials and provider secrets. An attacker can also mint persistent admin API keys that work from any IP, so patching alone does not evict someone who already got in. And because admin-only features such as `POST /v2/inference-backends/from-yaml` exist, the advisory says this "leads to code execution on worker hosts". The reported in-the-wild case involved custom backends running reverse shells against a v2.1.1 deployment.
+
+## Why "localhost is trusted" breaks
+
+The assumption feels safe because on a developer laptop it is true. Only processes on your own machine can reach `127.0.0.1`. Authentication seems pointless there, and removing it makes the first run friction-free.
+
+The assumption stops being true the moment the software is deployed properly:
+
+1. **Someone puts a proxy in front of it.** Nginx, Caddy or a sidecar on the same host terminates TLS and forwards to `127.0.0.1`. From the app's view, the whole internet is now loopback.
+2. **Someone adds a forwarding header.** The app is told to read the real client IP from a header so logs make sense. Now the "source" is whatever the client typed, unless the header is stripped and re-set by something trusted.
+3. **Someone runs it in a container or a pod.** Sidecars and port forwards share a network namespace or a loopback address. Several unrelated things can now be "local".
+
+Each step is a normal, sensible deployment choice. None of them is a mistake on its own. The mistake is the app using network position as proof of identity.
+
+## How to check your own GPUStack
+
+First find out what you run:
+
+```bash
+# Installed version (needs 2.2.0 or later)
+pip show gpustack | grep -i '^version'
+
+# If it runs in a container, check the image tag instead
+docker ps --format '{{.Image}}' | grep -i gpustack
+```
+
+If you are below 2.2.0, upgrade. The advisory's fix removes the loopback auto-admin path and hardens client-IP and forwarding-header handling.
+
+Then check exposure, because a version number does not tell you whether it was reachable:
+
+```bash
+# Is the API listening on something other than loopback?
+ss -ltnp | grep -i gpustack
+
+# From outside your network, does the API answer at all?
+curl -si https://your-gpustack.example/v2/users | head -1
+```
+
+On your own instance, `401` or `403` for an unauthenticated request is what you want to see. A `200` with user data means you are exposed, whatever the version says. Run this only against systems you own.
+
+## If it was reachable, look back
+
+Because of the persistent admin keys, treat any internet-reachable instance below 2.2.0 as possibly compromised, not just vulnerable. I'd look at:
+
+- **API keys.** List every key and delete any you cannot explain, especially ones with a wildcard scope.
+- **Users and workers.** Anything created recently that nobody on your team owns.
+- **Custom inference backends.** The documented exploitation used attacker-created backends, so review every backend definition and any YAML that was submitted.
+- **Worker hosts.** Look for unexpected outbound connections, new processes and new cron entries on the GPU machines, since that is where code runs.
+- **Secrets.** Rotate everything the platform stores: cloud keys, model registry tokens and provider API keys. The advisory says the attacker could read them.
+
+CISA's catalog guidance for this batch also tells defenders to apply vendor mitigations, evaluate internet exposure, and if mitigations are not available, stop using the product. I'd follow the first two and plan on the third if you cannot upgrade soon.
+
+## Workarounds if you cannot upgrade today
+
+The advisory lists three, and they are worth doing together:
+
+1. Set `force_auth_localhost=true`, so even loopback requests must authenticate.
+2. Make sure the proxy or gateway cannot cause external traffic to look like loopback, and strip any client-supplied `X-GPUStack-Real-IP` header at the edge.
+3. Keep the API off untrusted networks, behind a VPN or edge authentication.
+
+These are stopgaps. They reduce exposure but do not remove the code path the way 2.2.0 does.
+
+## The test I'd run on every internal tool
+
+This generalises well beyond one project. Take any service that has an "if the request comes from localhost" branch, or reads a client IP from a header, and try the two obvious cases against your own deployment:
+
+```bash
+# 1. Through your real reverse proxy, with no credentials.
+curl -si https://tool.internal.example/admin | head -1
+
+# 2. With a forged forwarding header added by the client.
+curl -si https://tool.internal.example/admin \
+  -H 'X-Forwarded-For: 127.0.0.1' \
+  -H 'X-Real-IP: 127.0.0.1' | head -1
+```
+
+If either returns something other than a redirect to login or a 401, you have found a trust-boundary bug before an attacker has. Add the same two requests to your integration tests so a refactor cannot bring it back.
+
+## What I'd change in how we build these
+
+- **Authenticate by credential, never by address.** An IP is a location, not an identity. If you need a no-login mode for local development, make it an explicit flag that is off in production images, not a default.
+- **Fail closed on defaults.** The vulnerable setting here is the default. A safe default would have turned this into a configuration mistake instead of a deployment-wide hole.
+- **Trust forwarding headers only from known proxies.** Configure the proxy's address explicitly, have it overwrite the header rather than append, and ignore the header from everyone else.
+- **Treat AI infrastructure as production infrastructure.** Model servers, orchestrators and gateways hold cloud credentials and sit next to expensive GPUs. They deserve the review a payments API would get.
+
+I'd also be sceptical of any tool whose quick-start says "no authentication needed on localhost." It is fine until the first reverse proxy, and then it is a critical vulnerability that nobody remembers adding.
+
+## What I would not over-read
+
+The in-the-wild report in the advisory covers one v2.1.1 deployment. I have not seen a published count of affected or compromised instances, so I would not guess one. The CISA listing does mean exploitation was confirmed, but it does not tell you how widely.
+
+The practical takeaway is simple. Check the version, check whether the API is reachable, and check your keys. Then go and look for the same one-sentence assumption in the tools you wrote yourself.
+
+If you want a second pair of eyes on an AI platform deployment, [get in touch](/contact).
